@@ -97,10 +97,16 @@ addopts = "-v --cov=toydl --cov-fail-under 60 --cov-report=term --cov-report=xml
 testpaths = [
     "tests",
 ]
+# Note that everything past the : after the mark name is an optional description.
+markers = [
+    "operator: operator related tests",
+]
+
 
 [tool.coverage.run]
 omit = [
-    "./toydl/utils/*",  # TODO: remove from omit
+    "*/__init__.py",
+    "toydl/util/testing.py"
 ]
 
 [tool.coverage.report]
