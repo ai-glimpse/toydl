@@ -48,7 +48,7 @@ def max(x, y):
 
 
 def is_close(x, y):
-    """:math:`f(x) = |x - y| < 1e-2` """
+    """:math:`f(x) = |x - y| < 1e-2`"""
     return abs(x - y) < 1e-2
 
 
@@ -132,7 +132,7 @@ def inv(x):
 
 def inv_back(x, d):
     r"""If :math:`f(x) = 1/x` compute d :math:`d \times f'(x)`"""
-    return -d / x ** 2
+    return -d / x**2
 
 
 def relu_back(x, d):
@@ -158,8 +158,10 @@ def map(fn):
         function : A function that takes a list, applies `fn` to each element, and returns a
         new list
     """
+
     def __f(items):
         return [fn(item) for item in items]
+
     return __f
 
 
@@ -180,9 +182,11 @@ def zip_with(fn):
         applying fn(x, y) on each pair of elements.
 
     """
+
     def __f(ls1, ls2):
         assert len(ls1) == len(ls2), "zipWith only works for equal size lists"
         return [fn(x, y) for x, y in zip(ls1, ls2)]
+
     return __f
 
 
@@ -204,11 +208,13 @@ def reduce(fn, start):
         :math:`x_1 \ldots x_n` and computes the reduction :math:`fn(x_3, fn(x_2,
         fn(x_1, x_0)))`
     """
+
     def __f(ls):
         ans = start
         for item in ls:
             ans = fn(item, ans)
         return ans
+
     return __f
 
 

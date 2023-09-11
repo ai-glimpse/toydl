@@ -137,6 +137,7 @@ def test_distribute(x, y, z):
     """
     assert_close(mul(z, (x + y)), mul(z, x) + mul(z, y))
 
+
 # These tests check that your higher-order functions obey basic
 # properties.
 
