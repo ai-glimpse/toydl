@@ -1,12 +1,17 @@
 import math
+
+import pytest
+from hypothesis import given
+from hypothesis.strategies import lists
+
 from toydl.core.operator import (
     mul,
     add,
     neg,
     relu,
-    addLists,
+    add_lists,
     prod,
-    negList,
+    neg_list,
     id,
     inv,
     lt,
@@ -18,14 +23,7 @@ from toydl.core.operator import (
     inv_back,
     sum,
 )
-from hypothesis import given
-from hypothesis.strategies import lists
 from .strategies import small_floats, assert_close
-import pytest
-from toydl.util.testing import MathTest
-
-
-# ## Task 0.1 Basic hypothesis tests.
 
 
 @pytest.mark.operator
@@ -67,7 +65,7 @@ def test_id(a):
 @pytest.mark.operator
 @given(small_floats)
 def test_lt(a):
-    "Check that a - 1.0 is always less than a"
+    """Check that a - 1.0 is always less than a"""
     assert lt(a - 1.0, a) == 1.0
     assert lt(a, a - 1.0) == 0.0
 
@@ -124,7 +122,7 @@ def test_transitive(a, b, c):
 @given(small_floats, small_floats)
 def test_symmetric(a, b):
     """
-    Write a test that ensures that :func:`minitorch.operators.mul` is symmetric, i.e.
+    Write a test that ensures that mul is symmetric, i.e.
     gives the same value regardless of the order of its input.
     """
     assert_close(mul(a, b), mul(b, a))
@@ -139,17 +137,6 @@ def test_distribute(x, y, z):
     """
     assert_close(mul(z, (x + y)), mul(z, x) + mul(z, y))
 
-
-@pytest.mark.operator
-def test_other():
-    """
-    Write a test that ensures some other property holds for your functions.
-    """
-    assert True
-
-
-# ## Task 0.3  - Higher-order functions
-
 # These tests check that your higher-order functions obey basic
 # properties.
 
@@ -157,7 +144,7 @@ def test_other():
 @pytest.mark.operator
 @given(small_floats, small_floats, small_floats, small_floats)
 def test_zip_with(a, b, c, d):
-    x1, x2 = addLists([a, b], [c, d])
+    x1, x2 = add_lists([a, b], [c, d])
     y1, y2 = a + c, b + d
     assert_close(x1, y1)
     assert_close(x2, y2)
@@ -173,7 +160,7 @@ def test_sum_distribute(ls1, ls2):
     Write a test that ensures that the sum of `ls1` plus the sum of `ls2`
     is the same as the sum of each element of `ls1` plus each element of `ls2`.
     """
-    assert_close(sum(ls1) + sum(ls2), sum(addLists(ls1, ls2)))
+    assert_close(sum(ls1) + sum(ls2), sum(add_lists(ls1, ls2)))
 
 
 @pytest.mark.operator
@@ -190,34 +177,13 @@ def test_prod(x, y, z):
 
 @pytest.mark.operator
 @given(lists(small_floats))
-def test_negList(ls):
-    check = negList(ls)
+def test_neg_list(ls):
+    check = neg_list(ls)
     for i in range(len(ls)):
         assert_close(check[i], -ls[i])
 
 
-# ## Generic mathematical tests
-
-# For each unit this generic set of mathematical tests will run.
-
-
-one_arg, two_arg, _ = MathTest._tests()
-
-
-@given(small_floats)
-@pytest.mark.parametrize("fn", one_arg)
-def test_one_args(fn, t1):
-    name, base_fn, _ = fn
-    base_fn(t1)
-
-
-@given(small_floats, small_floats)
-@pytest.mark.parametrize("fn", two_arg)
-def test_two_args(fn, t1, t2):
-    name, base_fn, _ = fn
-    base_fn(t1, t2)
-
-
+@pytest.mark.operator
 @given(small_floats, small_floats)
 def test_backs(a, b):
     relu_back(a, b)

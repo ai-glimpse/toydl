@@ -149,9 +149,6 @@ def map(fn):
     """
     Higher-order map.
 
-    .. image:: figs/Ops/maplist.png
-
-
     See `<https://en.wikipedia.org/wiki/Map_(higher-order_function)>`_
 
     Args:
@@ -166,17 +163,13 @@ def map(fn):
     return __f
 
 
-def negList(ls):
+def neg_list(ls):
     """Use :func:`map` and :func:`neg` to negate each element in `ls`"""
     return map(lambda x: -x)(ls)
 
 
-def zipWith(fn):
+def zip_with(fn):
     """
-    Higher-order zipwith (or map2).
-
-    .. image:: figs/Ops/ziplist.png
-
     See `<https://en.wikipedia.org/wiki/Map_(higher-order_function)>`_
 
     Args:
@@ -193,17 +186,14 @@ def zipWith(fn):
     return __f
 
 
-def addLists(ls1, ls2):
+def add_lists(ls1, ls2):
     """Add the elements of `ls1` and `ls2` using :func:`zipWith` and :func:`add`"""
-    return zipWith(add)(ls1, ls2)
+    return zip_with(add)(ls1, ls2)
 
 
 def reduce(fn, start):
     r"""
     Higher-order reduce.
-
-    .. image:: figs/Ops/reducelist.png
-
 
     Args:
         fn (two-arg function): combine two values
