@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Iterable, Optional, Sequence, Tuple, Type, Union
 
+from toydl.util.functions import wrap_tuple
 import toydl.core.operator as operators
-
-from toydl.core.autodiff import Context, Variable, backpropagate
+from toydl.core.context import Context
 
 ScalarLike = Union[float, int, "Scalar"]
 
@@ -18,7 +18,7 @@ class ScalarHistory:
 
     Attributes:
         last_fn : The last Function that was called.
-        ctx : The context for that Function.
+        ctx : The context.py for that Function.
         inputs : The inputs that were given when `last_fn.forward` was called.
 
     """
@@ -31,7 +31,7 @@ class ScalarHistory:
 _var_count: int = 0
 
 
-class Scalar(Variable):
+class Scalar:
     """
     A reimplementation of scalar values for autodifferentiation
     tracking. Scalar Variables behave as close as possible to standard
@@ -106,13 +106,23 @@ class Scalar(Variable):
     def unique_id(self):
         return self._unique_id
 
+    def requires_grad_(self, flag: bool = True):
+        """
+        Set the requires_grad flag to `flag` on variable.
+
+        Ensures that operations on this variable will trigger
+        backpropagation.
+
+        :param flag: whether to require grad
+        """
+        self.history = ScalarHistory()
+
     def accumulate_derivative(self, x: Any) -> None:
         """
-        Add `val` to the derivative accumulated on this variable.
+        Add `x` to the derivative accumulated on this variable.
         Should only be called during autodifferentiation on leaf variables.
 
-        Args:
-            x: value to be accumulated
+        :param x: value to be accumulated
         """
         assert self.is_leaf(), "Only leaf variables can have derivatives."
         if self.derivative is None:
@@ -127,11 +137,11 @@ class Scalar(Variable):
         return self.history is None
 
     @property
-    def parents(self) -> Iterable[Variable]:
+    def parents(self) -> Iterable[Scalar]:
         assert self.history is not None
         return self.history.inputs
 
-    def chain_rule(self, d_output: Any) -> Iterable[Tuple[Variable, Any]]:
+    def chain_rule(self, d_output: Any) -> Iterable[Tuple[Scalar, Any]]:
         h = self.history
         assert h is not None
         assert h.last_fn is not None
@@ -162,18 +172,53 @@ class Scalar(Variable):
         backpropagate(self, d_output)
 
 
-def wrap_tuple(x):  # type: ignore
-    """Turn a possible value into a tuple"""
-    if isinstance(x, tuple):
-        return x
-    return (x,)
+def topological_sort(variable: Scalar) -> Iterable[Scalar]:
+    """
+    Computes the topological order of the computation graph.
+
+    :param variable: The right-most variable
+    :return: Non-constant Variables in topological order starting from the right.
+    """
+    variables = []
+    visited = set()
+
+    def visit(var: Scalar):
+        if var.is_constant():
+            return
+        if var.unique_id in visited:
+            return
+        visited.add(var.unique_id)
+        if var.parents:
+            for child_var in var.parents:
+                visit(child_var)
+        variables.append(var)
+
+    visit(variable)
+    return variables[::-1]
 
 
-def unwrap_tuple(x):  # type: ignore
-    """Turn a singleton tuple into a value"""
-    if len(x) == 1:
-        return x[0]
-    return x
+def backpropagate(variable: Scalar, deriv: Any) -> None:
+    """
+    Runs backpropagation on the computation graph in order to
+    compute derivatives for the leave nodes.
+
+    :param variable: The right-most variable
+    :param deriv: Its derivative that we want to propagate backward to the leaves.
+
+    :return: No return.
+    Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
+    """
+    sorted_values = topological_sort(variable)
+    var_derivative_map = {variable.unique_id: deriv}
+    for var in sorted_values:
+        if var.is_leaf():
+            var.accumulate_derivative(var_derivative_map[var.unique_id])
+        else:
+            var_derivatives = var.chain_rule(var_derivative_map[var.unique_id])
+            for _var, _derivative in var_derivatives:
+                var_derivative_map[_var.unique_id] = (
+                    var_derivative_map.get(_var.unique_id, 0) + _derivative
+                )
 
 
 class ScalarFunction:
@@ -205,7 +250,7 @@ class ScalarFunction:
                 scalars.append(Scalar(v))
                 raw_vals.append(v)
 
-        # Create the context.
+        # Create the context.py.
         ctx = Context(False)
 
         # Call forward with the variables.

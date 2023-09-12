@@ -1,13 +1,16 @@
+from typing import Any
+from toydl.core.scalar import Scalar
+
+
 class Module:
     """
-    Modules form a tree that store parameters and other
-    submodules. They make up the basis of neural network stacks.
+    Modules form a tree that store parameters and other submodules.
+    They make up the basis of neural network stacks.
 
     Attributes:
-        _modules (dict of name x :class:`Module`): Storage of the child modules
-        _parameters (dict of name x :class:`Parameter`): Storage of the module's parameters
-        training (bool): Whether the module is in training mode or evaluation mode
-
+        _modules (dict): Storage of the child modules, mapping names to :class:`Module` objects.
+        _parameters (dict): Storage of the module's parameters, mapping names to :class:`Parameter` objects.
+        training (bool): Whether the module is in training mode or evaluation mode.
     """
 
     def __init__(self):
@@ -16,7 +19,7 @@ class Module:
         self.training = True
 
     def modules(self):
-        "Return the direct child modules of this module."
+        """Return the direct child modules of this module."""
         return self.__dict__["_modules"].values()
 
     def train(self):
@@ -36,8 +39,7 @@ class Module:
         Collect all the parameters of this module and its descendents.
 
 
-        Returns:
-            list of pairs: Contains the name and :class:`Parameter` of each ancestor parameter.
+        :return list of pairs: Contains the name and :class:`Parameter` of each ancestor parameter.
         """
         named_params = []
         # the module params
@@ -54,16 +56,13 @@ class Module:
         params = [param for name, param in self.named_parameters()]
         return params
 
-    def add_parameter(self, k, v):
+    def add_parameter(self, k: str, v: Scalar):
         """
         Manually add a parameter. Useful helper for scalar parameters.
 
-        Args:
-            k (str): Local name of the parameter.
-            v (value): Value for the parameter.
-
-        Returns:
-            Parameter: Newly created parameter.
+        :param k: Local name of the parameter.
+        :param v: Value for the parameter.
+        :return parameter: Newly created parameter.
         """
         val = Parameter(v, k)
         self.__dict__["_parameters"][k] = val
@@ -91,12 +90,12 @@ class Module:
         assert False, "Not Implemented"
 
     def __repr__(self):
-        def _addindent(s_, numSpaces):
+        def _add_indent(s_, num_spaces):
             s = s_.split("\n")
             if len(s) == 1:
                 return s_
             first = s.pop(0)
-            s = [(numSpaces * " ") + line for line in s]
+            s = [(num_spaces * " ") + line for line in s]
             s = "\n".join(s)
             s = first + "\n" + s
             return s
@@ -105,7 +104,7 @@ class Module:
 
         for key, module in self._modules.items():
             mod_str = repr(module)
-            mod_str = _addindent(mod_str, 2)
+            mod_str = _add_indent(mod_str, 2)
             child_lines.append("(" + key + "): " + mod_str)
         lines = child_lines
 
@@ -127,13 +126,33 @@ class Parameter:
     """
 
     def __init__(self, x=None, name=None):
+        """
+
+        :param x: the value of parameter
+        :param name: the name of parameter
+        """
         self.value = x
         self.name = name
+        # 这里设置`requires_grad_`为True可以将当前参数的值,即对应的Scalar instance
+        self.value.requires_grad_(True)
+        if self.name:
+            self.value.name = self.name
 
-    def update(self, x):
-        """Update the parameter value."""
-        # TODO: 这里不能直接写成self.value = x, 否则之后参数的derivative全部会为None，无法更新参数值
-        self.value.data = x.data
+    def update(self, x: Any):
+        r"""Update the parameter value.
+
+        ??? warning
+
+            注意这里在`update`方法也调用了`self.value.requires_grad_(True)`方法来
+
+        :param x: the parameter's new value
+        """
+        # self.value.data = x.data
+        self.value = x
+        if hasattr(x, "requires_grad_"):
+            self.value.requires_grad_(True)
+            if self.name:
+                self.value.name = self.name
 
     def __repr__(self):
         return repr(self.value)

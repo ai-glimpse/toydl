@@ -7,12 +7,12 @@ from hypothesis import given
 from toydl.core.operator import (
     add,
     eq,
-    id,
+    id_,
     inv,
     inv_back,
     log_back,
     lt,
-    max,
+    max_,
     mul,
     neg,
     relu,
@@ -30,7 +30,7 @@ def test_same_as_python(x, y):
     assert_close(mul(x, y), x * y)
     assert_close(add(x, y), x + y)
     assert_close(neg(x), -x)
-    assert_close(max(x, y), x if x > y else y)
+    assert_close(max_(x, y), x if x > y else y)
     if x != 0.0 and not math.isinf(1.0 / x):
         assert_close(inv(x), 1.0 / x)
 
@@ -56,7 +56,7 @@ def test_relu_back(a, b):
 @pytest.mark.operator
 @given(small_floats)
 def test_id(a):
-    assert id(a) == a
+    assert id_(a) == a
 
 
 @pytest.mark.operator
@@ -70,10 +70,10 @@ def test_lt(a):
 @pytest.mark.operator
 @given(small_floats)
 def test_max(a):
-    assert max(a - 1.0, a) == a
-    assert max(a, a - 1.0) == a
-    assert max(a + 1.0, a) == a + 1.0
-    assert max(a, a + 1.0) == a + 1.0
+    assert max_(a - 1.0, a) == a
+    assert max_(a, a - 1.0) == a
+    assert max_(a + 1.0, a) == a + 1.0
+    assert max_(a, a + 1.0) == a + 1.0
 
 
 @pytest.mark.operator

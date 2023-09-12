@@ -10,15 +10,18 @@ def mul_back(x: float, y: float, d: float):
     return d * y, d * x
 
 
-def id(x: float) -> float:
+def id_(x: float) -> float:
+    """$f(x) = x$"""
     return x
 
 
 def add(x: float, y: float) -> float:
+    """$f(x, y) = x + y$"""
     return x + y
 
 
 def neg(x: float) -> float:
+    """$f(x) = -x$"""
     return -x
 
 
@@ -26,7 +29,8 @@ def neg_back(d: float) -> float:
     return -d
 
 
-def lt(x: float, y: float):
+def lt(x: float, y: float) -> float:
+    """$f(x, y) = x < y$"""
     return float(x < y)
 
 
@@ -34,7 +38,7 @@ def eq(x: float, y: float) -> float:
     return float(abs(x - y) <= 1e-8)
 
 
-def max(x, y):
+def max_(x, y):
     return x if x > y else y
 
 
@@ -44,9 +48,20 @@ def is_close(x: float, y: float) -> float:
 
 def sigmoid(x: float) -> float:
     r"""
-    $f(x) =  \frac{1.0}{(1.0 + e^{-x})}` if x >=0 else :math:`\frac{e^x}{(1.0 + e^{x})}$
+    $$f(x) =  \frac{1.0}{(1.0 + e^{-x})}$$
+
+    Calculate as
+
+    $$
+    f(x) = \begin{cases}
+    \frac{1.0}{1.0 + e^{-x}} & \text{if } x \geq 0 \\
+    \frac{e^x}{1.0 + e^x} & \text{otherwise}
+    \end{cases}
+    $$
+
+    for stability.
+    The key is to make sure the `x` in exp(x) is always negative to avoid exp(x) overflow.
     """
-    # IF-ELSE is used to make sure the `x` in exp(x) is always negative to avoid exp(x) overflow
     return 1 / (1 + math.exp(-x)) if x >= 0 else math.exp(x) / (1 + math.exp(x))
 
 

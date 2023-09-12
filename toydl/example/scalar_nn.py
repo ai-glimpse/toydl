@@ -14,7 +14,7 @@ class Network(Module):
         self.layer2 = Linear(5, 5)
         self.layer3 = Linear(5, 1)
 
-    def forward(self, x):
+    def forward(self, x) -> Scalar:
         middle = [h.relu() for h in self.layer1.forward(x)]
         end = [h.relu() for h in self.layer2.forward(middle)]
         return self.layer3.forward(end)[0].sigmoid()
@@ -38,7 +38,7 @@ class Linear(Module):
                 self.add_parameter(f"bias_{j}", Scalar(2 * (random.random() - 0.5)))
             )
 
-    def forward(self, inputs) -> List[Scalar]:
+    def forward(self, inputs: List[Scalar]) -> List[Scalar]:
         outputs = []
         n, m = len(self.weights), len(self.weights[0])
         for j in range(m):
@@ -75,7 +75,7 @@ class ScalarTrain:
 
             # Forward
             loss = 0
-            for i in range(data.N):
+            for i in range(data.n):
                 x_1, x_2 = data.X[i]
                 y = data.y[i]
                 x_1 = Scalar(x_1)
@@ -89,7 +89,7 @@ class ScalarTrain:
                     prob = -out + 1.0
                     correct += 1 if out.data < 0.5 else 0
                 loss = -prob.log()
-                (loss / data.N).backward()
+                (loss / data.n).backward()
                 total_loss += loss.data
 
             losses.append(total_loss)
@@ -103,10 +103,10 @@ class ScalarTrain:
 
 
 if __name__ == "__main__":
-    from toydl.dataset.data import datasets
+    from toydl.dataset.simulation import datasets
 
     PTS = 50
     HIDDEN = 3
-    RATE = 0.1
+    RATE = 0.05
     data = datasets["Simple"](PTS)
     ScalarTrain(HIDDEN).train(data, RATE, max_epochs=100)
