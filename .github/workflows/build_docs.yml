@@ -38,7 +38,7 @@ jobs:
         run: poetry install --no-interaction --no-root
 
       - name: Install library
-        run: poetry install --dev --no-interaction
+        run: poetry install --no-interaction
 
       - name: Build docs
         run: mkdocs gh-deploy --force
