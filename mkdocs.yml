@@ -11,8 +11,6 @@ nav:
   - Home: index.md
   - Getting started:
       - Quick Start: quickstart.md
-      - User Guide:
-          - Read First: user-guide/1-read-first.md
   - API References:
       - Operator: api/operator.md
       - Context: api/context.md
@@ -29,13 +27,17 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: teal
+      accent: deep purple
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/weather-sunny
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: cyan
+      accent: deep purple
       toggle:
-        icon: material/lightbulb
+        icon: material/weather-night
         name: Switch to light mode
   features:
     # - announce.dismiss
