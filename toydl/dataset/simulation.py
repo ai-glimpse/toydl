@@ -55,4 +55,4 @@ def xor(n):
     return Graph(n, data, y)
 
 
-datasets = {"Simple": simple, "Diag": diag, "Split": split, "xor": xor}
+datasets = {"Simple": simple, "Diag": diag, "Split": split, "Xor": xor}

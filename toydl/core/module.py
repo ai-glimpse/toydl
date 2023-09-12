@@ -1,4 +1,5 @@
 from typing import Any
+
 from toydl.core.scalar import Scalar
 
 

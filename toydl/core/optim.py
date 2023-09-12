@@ -7,6 +7,7 @@ class Optimizer:
     """
     The Optimizer base class
     """
+
     def __init__(self, parameters: Sequence[Parameter]):
         self.parameters = parameters
 
@@ -16,6 +17,7 @@ class SGD(Optimizer):
     Stochastic Gradient Descent Optimizer
 
     """
+
     def __init__(self, parameters: Sequence[Parameter], lr: float = 1.0):
         """
         Init the SGD optimizer

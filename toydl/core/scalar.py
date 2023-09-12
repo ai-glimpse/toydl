@@ -3,9 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Iterable, Optional, Sequence, Tuple, Type, Union
 
-from toydl.util.functions import wrap_tuple
 import toydl.core.operator as operators
+
 from toydl.core.context import Context
+from toydl.util.functions import wrap_tuple
 
 ScalarLike = Union[float, int, "Scalar"]
 
