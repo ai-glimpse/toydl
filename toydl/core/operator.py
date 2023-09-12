@@ -101,9 +101,11 @@ def neg_list(ls: Iterable[float]) -> Iterable[float]:
     return map(lambda x: -x)(ls)
 
 
-def zip_with(fn: Callable[[float, float], float]) -> Callable[[Iterable[float], Iterable[float]], Iterable[float]]:
+def zip_with(
+    fn: Callable[[float, float], float]
+) -> Callable[[Iterable[float], Iterable[float]], Iterable[float]]:
     def __f(ls1: Iterable[float], ls2: Iterable[float]) -> Iterable[float]:
-        assert len(ls1) == len(ls2), "zip_with only works for equal size lists"  # NOQA
+        assert len(ls1) == len(ls2), "zip_with only works for equal size lists"  # type: ignore
         return [fn(x, y) for x, y in zip(ls1, ls2)]
 
     return __f
@@ -113,7 +115,9 @@ def add_lists(ls1: Iterable[float], ls2: Iterable[float]) -> Iterable[float]:
     return zip_with(add)(ls1, ls2)
 
 
-def reduce(fn: Callable[[float, float], float], start: float) -> Callable[[Iterable[float]], float]:
+def reduce(
+    fn: Callable[[float, float], float], start: float
+) -> Callable[[Iterable[float]], float]:
     def __f(ls):
         ans = start
         for item in ls:

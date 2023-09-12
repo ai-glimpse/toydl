@@ -141,10 +141,15 @@ class Scalar:
         assert h.ctx is not None
 
         derivatives = h.last_fn._backward(h.ctx, d_output)
-        derivatives = derivatives if isinstance(derivatives, Iterable) else (derivatives,)
+        derivatives = (
+            derivatives if isinstance(derivatives, Iterable) else (derivatives,)
+        )
         variables = h.inputs if isinstance(h.inputs, Iterable) else (h.inputs,)
-        var_derivatives = [(var, derivative) for (var, derivative) in zip(variables, derivatives)
-                           if not var.is_constant()]
+        var_derivatives = [
+            (var, derivative)
+            for (var, derivative) in zip(variables, derivatives)
+            if not var.is_constant()
+        ]
         return var_derivatives
 
     def backward(self, d_output: Optional[float] = None) -> None:
@@ -208,7 +213,9 @@ class ScalarFunction:
 
         # Call forward with the variables.
         c = cls._forward(ctx, *raw_vals)
-        assert isinstance(c, (float, int)), "Expected return type float got %s" % (type(c))
+        assert isinstance(c, (float, int)), "Expected return type float got %s" % (
+            type(c)
+        )
 
         # Create a new variable from the result with a new history.
         back = ScalarHistory(cls, ctx, scalars)

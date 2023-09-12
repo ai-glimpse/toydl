@@ -87,7 +87,7 @@ class Module:
     def __call__(self, *args, **kwargs):
         return self.forward(*args, **kwargs)
 
-    def forward(self):
+    def forward(self, *args, **kwargs):
         assert False, "Not Implemented"
 
     def __repr__(self):

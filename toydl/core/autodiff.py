@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Iterable, List, Tuple
+from typing import Any, Iterable, Tuple
 
 from typing_extensions import Protocol
 
@@ -76,7 +76,9 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
         else:
             var_derivatives = var.chain_rule(var_derivative_map[var.unique_id])
             for _var, _derivative in var_derivatives:
-                var_derivative_map[_var.unique_id] = var_derivative_map.get(_var.unique_id, 0) + _derivative
+                var_derivative_map[_var.unique_id] = (
+                    var_derivative_map.get(_var.unique_id, 0) + _derivative
+                )
 
 
 @dataclass

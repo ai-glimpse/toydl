@@ -1,10 +1,5 @@
-"""
-Be sure you have minitorch installed in you Virtual Env.
->>> pip install -Ue .
-"""
 from typing import List
 
-import toydl
 import random
 from toydl.core.scalar import Scalar
 from toydl.core.module import Module
@@ -39,9 +34,7 @@ class Linear(Module):
                 )
         for j in range(out_size):
             self.bias.append(
-                self.add_parameter(
-                    f"bias_{j}", Scalar(2 * (random.random() - 0.5))
-                )
+                self.add_parameter(f"bias_{j}", Scalar(2 * (random.random() - 0.5)))
             )
 
     def forward(self, inputs) -> List[Scalar]:
@@ -65,9 +58,7 @@ class ScalarTrain:
         self.model = Network(self.hidden_layers)
 
     def run_one(self, x):
-        return self.model.forward(
-            (Scalar(x[0], name="x_1"), Scalar(x[1], name="x_2"))
-        )
+        return self.model.forward((Scalar(x[0], name="x_1"), Scalar(x[1], name="x_2")))
 
     def train(self, data, learning_rate, max_epochs=500, log_fn=default_log_fn):
         self.learning_rate = learning_rate
