@@ -13,6 +13,12 @@ nav:
       - Quick Start: quickstart.md
       - User Guide:
           - Read First: user-guide/1-read-first.md
+  - API References:
+      - Operator: api/operator.md
+      - Context: api/context.md
+      - Scalar: api/scalar.md
+      - Module: api/module.md
+      - Optim: api/optim.md
   - Changelog: CHANGELOG.md
 
 theme:
@@ -88,5 +94,34 @@ markdown_extensions:
   - admonition
   - attr_list
 
+watch:
+  - ./toydl
+
 plugins:
   - search
+
+
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          import:
+          - https://docs.python.org/3/objects.inv
+          - https://www.mkdocs.org/objects.inv
+          options:
+            docstring_style: sphinx
+            docstring_options:
+              ignore_init_summary: true
+            docstring_section_style: table
+#            show_docstring_classes: true
+#            show_docstring_attributes: true
+            heading_level: 2
+            merge_init_into_class: true
+            separate_signature: true
+            show_root_heading: false
+            show_root_full_path: false
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            show_root_members_full_path: true

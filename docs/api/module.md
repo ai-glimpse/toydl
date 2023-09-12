@@ -1,0 +1,3 @@
+# Module
+
+::: toydl.core.module

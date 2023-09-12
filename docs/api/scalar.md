@@ -1,0 +1,3 @@
+# Scalar
+
+::: toydl.core.scalar

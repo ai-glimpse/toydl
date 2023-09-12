@@ -1,29 +1,26 @@
 import math
 
 import pytest
+
 from hypothesis import given
-from hypothesis.strategies import lists
 
 from toydl.core.operator import (
-    mul,
     add,
+    eq,
+    id_,
+    inv,
+    inv_back,
+    log_back,
+    lt,
+    max_,
+    mul,
     neg,
     relu,
-    add_lists,
-    prod,
-    neg_list,
-    id,
-    inv,
-    lt,
-    eq,
-    max,
-    sigmoid,
     relu_back,
-    log_back,
-    inv_back,
-    sum,
+    sigmoid,
 )
-from .strategies import small_floats, assert_close
+
+from .strategies import assert_close, small_floats
 
 
 @pytest.mark.operator
@@ -33,7 +30,7 @@ def test_same_as_python(x, y):
     assert_close(mul(x, y), x * y)
     assert_close(add(x, y), x + y)
     assert_close(neg(x), -x)
-    assert_close(max(x, y), x if x > y else y)
+    assert_close(max_(x, y), x if x > y else y)
     if x != 0.0 and not math.isinf(1.0 / x):
         assert_close(inv(x), 1.0 / x)
 
@@ -59,7 +56,7 @@ def test_relu_back(a, b):
 @pytest.mark.operator
 @given(small_floats)
 def test_id(a):
-    assert id(a) == a
+    assert id_(a) == a
 
 
 @pytest.mark.operator
@@ -73,10 +70,10 @@ def test_lt(a):
 @pytest.mark.operator
 @given(small_floats)
 def test_max(a):
-    assert max(a - 1.0, a) == a
-    assert max(a, a - 1.0) == a
-    assert max(a + 1.0, a) == a + 1.0
-    assert max(a, a + 1.0) == a + 1.0
+    assert max_(a - 1.0, a) == a
+    assert max_(a, a - 1.0) == a
+    assert max_(a + 1.0, a) == a + 1.0
+    assert max_(a, a + 1.0) == a + 1.0
 
 
 @pytest.mark.operator
@@ -136,52 +133,6 @@ def test_distribute(x, y, z):
     :math:`z \times (x + y) = z \times x + z \times y`
     """
     assert_close(mul(z, (x + y)), mul(z, x) + mul(z, y))
-
-
-# These tests check that your higher-order functions obey basic
-# properties.
-
-
-@pytest.mark.operator
-@given(small_floats, small_floats, small_floats, small_floats)
-def test_zip_with(a, b, c, d):
-    x1, x2 = add_lists([a, b], [c, d])
-    y1, y2 = a + c, b + d
-    assert_close(x1, y1)
-    assert_close(x2, y2)
-
-
-@pytest.mark.operator
-@given(
-    lists(small_floats, min_size=5, max_size=5),
-    lists(small_floats, min_size=5, max_size=5),
-)
-def test_sum_distribute(ls1, ls2):
-    """
-    Write a test that ensures that the sum of `ls1` plus the sum of `ls2`
-    is the same as the sum of each element of `ls1` plus each element of `ls2`.
-    """
-    assert_close(sum(ls1) + sum(ls2), sum(add_lists(ls1, ls2)))
-
-
-@pytest.mark.operator
-@given(lists(small_floats))
-def test_sum(ls):
-    assert_close(sum(ls), sum(ls))
-
-
-@pytest.mark.operator
-@given(small_floats, small_floats, small_floats)
-def test_prod(x, y, z):
-    assert_close(prod([x, y, z]), x * y * z)
-
-
-@pytest.mark.operator
-@given(lists(small_floats))
-def test_neg_list(ls):
-    check = neg_list(ls)
-    for i in range(len(ls)):
-        assert_close(check[i], -ls[i])
 
 
 @pytest.mark.operator
