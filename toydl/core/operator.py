@@ -1,5 +1,4 @@
 import math
-from typing import Callable, Iterable
 
 
 def mul(x: float, y: float) -> float:
@@ -88,48 +87,3 @@ def inv_back(x: float, d: float) -> float:
 
 def relu_back(x: float, d: float) -> float:
     return d if x > 0 else 0
-
-
-def map(fn: Callable[[float], float]) -> Callable[[Iterable[float]], Iterable[float]]:
-    def __f(items):
-        return [fn(item) for item in items]
-
-    return __f
-
-
-def neg_list(ls: Iterable[float]) -> Iterable[float]:
-    return map(lambda x: -x)(ls)
-
-
-def zip_with(
-    fn: Callable[[float, float], float]
-) -> Callable[[Iterable[float], Iterable[float]], Iterable[float]]:
-    def __f(ls1: Iterable[float], ls2: Iterable[float]) -> Iterable[float]:
-        assert len(ls1) == len(ls2), "zip_with only works for equal size lists"  # type: ignore
-        return [fn(x, y) for x, y in zip(ls1, ls2)]
-
-    return __f
-
-
-def add_lists(ls1: Iterable[float], ls2: Iterable[float]) -> Iterable[float]:
-    return zip_with(add)(ls1, ls2)
-
-
-def reduce(
-    fn: Callable[[float, float], float], start: float
-) -> Callable[[Iterable[float]], float]:
-    def __f(ls):
-        ans = start
-        for item in ls:
-            ans = fn(item, ans)
-        return ans
-
-    return __f
-
-
-def sum(ls: Iterable[float]) -> float:
-    return reduce(add, 0)(ls)
-
-
-def prod(ls: Iterable[float]) -> float:
-    return reduce(mul, 1)(ls)

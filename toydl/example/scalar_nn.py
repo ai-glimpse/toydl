@@ -1,9 +1,10 @@
+import random
+
 from typing import List
 
-import random
-from toydl.core.scalar import Scalar
 from toydl.core.module import Module
 from toydl.core.optim import SGD
+from toydl.core.scalar import Scalar
 
 
 class Network(Module):

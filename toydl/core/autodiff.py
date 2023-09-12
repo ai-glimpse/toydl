@@ -1,32 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Iterable, Tuple
 
-from typing_extensions import Protocol
-
-
-variable_count = 1
-
-
-class Variable(Protocol):
-    def accumulate_derivative(self, x: Any) -> None:
-        pass
-
-    @property
-    def unique_id(self) -> int:
-        pass
-
-    def is_leaf(self) -> bool:
-        pass
-
-    def is_constant(self) -> bool:
-        pass
-
-    @property
-    def parents(self) -> Iterable["Variable"]:
-        pass
-
-    def chain_rule(self, d_output: Any) -> Iterable[Tuple["Variable", Any]]:
-        pass
+from toydl.core.variable import Variable
 
 
 def topological_sort(variable: Variable) -> Iterable[Variable]:
@@ -84,7 +59,7 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
 @dataclass
 class Context:
     """
-    Context class is used by `Function` to store information during the forward pass.
+    Context class is used by `ScalarFunction` to store information during the forward pass.
     """
 
     no_grad: bool = False
@@ -95,7 +70,3 @@ class Context:
         if self.no_grad:
             return
         self.saved_values = values
-
-    @property
-    def saved_tensors(self) -> Tuple[Any, ...]:
-        return self.saved_values

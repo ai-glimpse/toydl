@@ -3,8 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Iterable, Optional, Sequence, Tuple, Type, Union
 
-from toydl.core.autodiff import Context, Variable, backpropagate
 import toydl.core.operator as operators
+
+from toydl.core.autodiff import Context, Variable, backpropagate
 
 ScalarLike = Union[float, int, "Scalar"]
 
@@ -27,10 +28,10 @@ class ScalarHistory:
     inputs: Sequence[Scalar] = ()
 
 
-_var_count = 0
+_var_count: int = 0
 
 
-class Scalar:
+class Scalar(Variable):
     """
     A reimplementation of scalar values for autodifferentiation
     tracking. Scalar Variables behave as close as possible to standard
@@ -38,12 +39,6 @@ class Scalar:
     number's creation. They can only be manipulated by
     `ScalarFunction`.
     """
-
-    history: Optional[ScalarHistory]
-    derivative: Optional[float]
-    data: float
-    unique_id: int
-    name: str
 
     def __init__(
         self,
@@ -53,10 +48,10 @@ class Scalar:
     ):
         global _var_count
         _var_count += 1
-        self.unique_id = _var_count
-        self.data = float(v)
-        self.history = back
-        self.derivative = None
+        self._unique_id: int = _var_count
+        self.data: float = float(v)
+        self.history: ScalarHistory = back
+        self.derivative: Optional[float] = None
         if name is not None:
             self.name = name
         else:
@@ -107,7 +102,9 @@ class Scalar:
     def relu(self):
         return ReLU.apply(self)
 
-    # Variable elements for backprop
+    @property
+    def unique_id(self):
+        return self._unique_id
 
     def accumulate_derivative(self, x: Any) -> None:
         """
