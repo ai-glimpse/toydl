@@ -8,10 +8,6 @@ class Module:
     Modules form a tree that store parameters and other submodules.
     They make up the basis of neural network stacks.
 
-    Attributes:
-        _modules (dict): Storage of the child modules, mapping names to :class:`Module` objects.
-        _parameters (dict): Storage of the module's parameters, mapping names to :class:`Parameter` objects.
-        training (bool): Whether the module is in training mode or evaluation mode.
     """
 
     def __init__(self):
@@ -145,6 +141,7 @@ class Parameter:
         ??? warning
 
             注意这里在`update`方法也调用了`self.value.requires_grad_(True)`方法来
+            确保参数更新后依然是叶子节点，保证可以累计梯度计算并进行参数更新
 
         :param x: the parameter's new value
         """
