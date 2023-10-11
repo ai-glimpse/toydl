@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "toydl"
-version = "0.1.0"
+version = "0.2.0"
 description = "ToyDL: Deep Learning from Scratch"
 license = "MIT"
 authors = ["Xiangzhuang Shen <datahonor@gmail.com>"]
