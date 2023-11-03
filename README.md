@@ -14,7 +14,15 @@
 </a>
 </p>
 
-# Installation
+## Installation
 ```bash
 pip install toydl
 ```
+
+## Get Started
+TODO
+
+## Related Projects
+- [minitorch](https://github.com/minitorch/minitorch)
+- [micrograd](https://github.com/karpathy/micrograd)
+- [tinygrad](https://github.com/tinygrad/tinygrad)
