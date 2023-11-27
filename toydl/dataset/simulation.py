@@ -1,6 +1,35 @@
 import random
 
 from dataclasses import dataclass
+from typing import Tuple
+
+
+@dataclass
+class Graph:
+    n: int
+    X: list
+    y: list
+
+    def __len__(self) -> int:
+        return self.n
+
+    def __getitem__(self, index) -> "Graph":
+        if isinstance(index, slice):
+            xs = self.X[index]
+            ys = self.y[index]
+            return Graph(len(xs), xs, ys)
+        elif isinstance(index, int):
+            return Graph(1, self.X[index], self.y[index])
+        else:
+            raise TypeError(f"Invalid argument type: {type(index)}, {index}")
+
+    def train_test_split(
+        self, train_proportion: float = 0.7
+    ) -> Tuple["Graph", "Graph"]:
+        training_size = int(len(self) * train_proportion)
+        training_set = self[:training_size]
+        test_set = self[training_size:]
+        return training_set, test_set
 
 
 def make_pts(n):
@@ -10,13 +39,6 @@ def make_pts(n):
         x_2 = random.random()
         data.append((x_1, x_2))
     return data
-
-
-@dataclass
-class Graph:
-    n: int
-    X: list
-    y: list
 
 
 def simple(n):
