@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Tuple, Union
 
+import matplotlib.pyplot as plt
+
 from toydl.dataset.base import DataSetBase
 from toydl.dataset.exception import DatasetValidationError
 
@@ -45,8 +47,21 @@ class SimpleDataset(DataSetBase):
         test_set = self[training_size:]
         return training_set, test_set
 
+    def plot(self, filename: str = "dataset.png"):
+        x_values = [x[0] for x in self.xs]
+        y_values = [x[1] for x in self.xs]
+
+        # Assign colors based on the y values
+        colors = ["green" if y == 0 else "red" for y in self.ys]
+
+        # Plot the data points with specified colors
+        plt.scatter(x_values, y_values, c=colors)
+        plt.tight_layout()
+        if filename is not None:
+            plt.savefig(filename, dpi=300)
+        plt.show()
+
 
 if __name__ == "__main__":
     data = SimpleDataset([[1, 1], [2, 2]], [1, 2])
-    for x, y in data:
-        print(x, y)
+    data.plot()

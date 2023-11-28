@@ -11,6 +11,7 @@ from toydl.loss.cross_entropy import CrossEntropyLoss
 from toydl.network.mlp import MLPBinaryClassifyNetFactory, MLPConfig
 
 
+# --8<-- [start:model]
 class MLPBinaryClassifyModel:
     def __init__(self, mlp_config: MLPConfig):
         self.net = MLPBinaryClassifyNetFactory(mlp_config)
@@ -68,6 +69,8 @@ class MLPBinaryClassifyModel:
         test_result = f"right/total = {test_correct}/{len(test_set)}"
         return training_loss, testing_loss, test_result
 
+    # --8<-- [end:model]
+
     @staticmethod
     def plot_loss(
         training_loss: List[float],
@@ -84,11 +87,15 @@ class MLPBinaryClassifyModel:
         plt.show()
 
 
+# --8<-- [start:gen_dateset]
 def get_dataset(n: int = 100) -> Tuple[SimpleDataset, SimpleDataset]:
     data = simulation_dataset.simple(n)
     training_set, test_set = data.train_test_split(train_proportion=0.7)
 
     return training_set, test_set
+
+
+# --8<-- [end:gen_dateset]
 
 
 def run_sgd(
@@ -117,7 +124,7 @@ def run_momentum(
     learning_rate: float,
     max_epochs: int = 500,
 ):
-    momentum = 0
+    momentum = 0.5
     mlp_model = MLPBinaryClassifyModel(mlp_config)
 
     optimizer = Momentum(mlp_model.net.parameters(), learning_rate, momentum)
@@ -134,8 +141,9 @@ def run_momentum(
 
 
 def run():
-    n = 500
+    n = 100
     training_set, test_set = get_dataset(n)
+    training_set.plot(filename="training_set.png")
     mlp_config = MLPConfig(
         in_size=2, out_size=1, hidden_layer_size=10, hidden_layer_num=2
     )
