@@ -10,7 +10,7 @@ copyright: Copyright &copy; 2022 Xiangzhuang Shen
 nav:
   - Home: index.md
   - Getting started:
-      - Quick Start: quickstart.md
+      - MLP: quickstart/mlp.md
   - API References:
       - Operator: api/operator.md
       - Context: api/context.md
@@ -90,7 +90,9 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.details
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      url_download: true
+      url_max_size: 33554432
   - pymdownx.tabbed
   - abbr
   - admonition

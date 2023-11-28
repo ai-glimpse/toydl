@@ -64,6 +64,9 @@ class Scalar:
     def __mul__(self, b):
         return Mul.apply(self, b)
 
+    def __rmul__(self, b):
+        return Mul.apply(b, self)
+
     def __truediv__(self, b):
         return Mul.apply(self, Inv.apply(b))
 
@@ -87,6 +90,9 @@ class Scalar:
 
     def __sub__(self, b):
         return Add.apply(self, Neg.apply(b))
+
+    def __rsub__(self, b):
+        return Add.apply(b, Neg.apply(self))
 
     def __neg__(self):
         return Neg.apply(self)
