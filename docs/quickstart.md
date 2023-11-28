@@ -4,7 +4,7 @@
 
 ## Binary Classification with MLP
 
-??? "MLPBinaryClassifyModel"
+??? "MLP Binary Classify Model"
 
     ```python
     from toydl.core.optim import SGD

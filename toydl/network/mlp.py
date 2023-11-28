@@ -14,7 +14,7 @@ class MLPConfig:
     hidden_layer_size: int
 
 
-class MLPBinaryClassify(Module):
+class MLPBinaryClassifyNetFactory(Module):
     def __init__(self, config: MLPConfig):
         super().__init__()
         self.order_layer_names: List[str] = []
@@ -68,4 +68,4 @@ if __name__ == "__main__":
     mlp_config = MLPConfig(
         in_size=2, out_size=1, hidden_layer_size=10, hidden_layer_num=5
     )
-    mlp = MLPBinaryClassify(mlp_config)
+    mlp = MLPBinaryClassifyNetFactory(mlp_config)

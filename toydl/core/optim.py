@@ -89,9 +89,10 @@ class Momentum(Optimizer):
         for p in self.parameters:
             if p.value is None:
                 continue
-            if hasattr(p.value, "derivative"):
-                if p.value.derivative is not None:
-                    p.value.derivative = None
+            if hasattr(p.value, "derivative") and p.value.derivative is not None:
+                p.value.derivative = None
+        # Clear delta map
+        self.parameter_delta_map = {}
 
     def step(self) -> None:
         """
