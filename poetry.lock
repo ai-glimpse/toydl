@@ -1063,6 +1063,28 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "mkdocs-simple-hooks"
+version = "0.1.5"
+description = "Define your own hooks for mkdocs, without having to create a new package."
+optional = false
+python-versions = "*"
+files = [
+    {file = "mkdocs-simple-hooks-0.1.5.tar.gz", hash = "sha256:dddbdf151a18723c9302a133e5cf79538be8eb9d274e8e07d2ac3ac34890837c"},
+    {file = "mkdocs_simple_hooks-0.1.5-py3-none-any.whl", hash = "sha256:efeabdbb98b0850a909adee285f3404535117159d5cb3a34f541d6eaa644d50a"},
+]
+
+[package.dependencies]
+mkdocs = ">=1.2"
+
+[package.extras]
+test = ["pytest (>=4.0)", "pytest-cov"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "mkdocstrings"
 version = "0.23.0"
 description = "Automatic documentation from sources, for MkDocs."
@@ -2079,4 +2101,4 @@ full = ["tqdm"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "634efcefd1e8871f55f5a5be34cd3b44cf68ccb1cb1344e1e36af09b2d2fe172"
+content-hash = "c38c5e00a7db79d9cdc3588e9fff116d6df26fc68a6eef6d9f4e5c7a0350f2b3"
