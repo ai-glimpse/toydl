@@ -10,7 +10,9 @@ copyright: Copyright &copy; 2022 Xiangzhuang Shen
 nav:
   - Home: index.md
   - Getting started:
-      - MLP: quickstart/mlp.md
+      - Quick Start:
+          - Installation: quickstart/install.md
+          - MLP: quickstart/mlp.md
   - API References:
       - Operator: api/operator.md
       - Context: api/context.md
@@ -21,6 +23,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: 'docs/theme'
   icon:
     repo: fontawesome/brands/github
   language: en
@@ -64,9 +67,12 @@ docs_dir: docs
 
 extra_css:
   - css/extra.css
+  - css/run_code_main.css
 
 extra_javascript:
   - js/config.js
+  - js/run_code_main.js
+  # - 'https://samuelcolvin.github.io/mkdocs-run-code/run_code_main.js'
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
@@ -86,6 +92,7 @@ markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight:
+      pygments_lang_class: true
       linenums_style: pymdownx.inline
   - pymdownx.superfences
   - pymdownx.inlinehilite
@@ -103,8 +110,6 @@ watch:
 
 plugins:
   - search
-
-
   - autorefs
   - mkdocstrings:
       handlers:
@@ -129,3 +134,8 @@ plugins:
             show_symbol_type_toc: true
             signature_crossrefs: true
             show_root_members_full_path: true
+  - mkdocs-simple-hooks:
+      hooks:
+        on_pre_build: 'docs.plugins.main:on_pre_build'
+        on_files: 'docs.plugins.main:on_files'
+        on_page_markdown: 'docs.plugins.main:on_page_markdown'
