@@ -1,3 +1,7 @@
+"""
+code from: https://github.com/pydantic/pydantic/blob/main/docs/plugins/main.py
+"""
+
 from __future__ import annotations as _annotations
 
 import json
