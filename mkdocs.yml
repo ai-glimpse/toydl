@@ -21,6 +21,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: 'docs/theme'
   icon:
     repo: fontawesome/brands/github
   language: en
@@ -105,8 +106,6 @@ watch:
 
 plugins:
   - search
-
-
   - autorefs
   - mkdocstrings:
       handlers:
