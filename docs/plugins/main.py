@@ -6,23 +6,19 @@ from __future__ import annotations as _annotations
 
 import json
 import logging
-import os
 import re
-import textwrap
+
 from pathlib import Path
 from textwrap import indent
 
 import autoflake
 import pyupgrade._main as pyupgrade_main  # type: ignore
-import tomli
-import yaml
-from jinja2 import Template  # type: ignore
+
 from mkdocs.config import Config
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
 
-
-logger = logging.getLogger('mkdocs.plugin')
+logger = logging.getLogger("mkdocs.plugin")
 THIS_DIR = Path(__file__).parent
 DOCS_DIR = THIS_DIR.parent
 PROJECT_ROOT = DOCS_DIR.parent
@@ -61,15 +57,15 @@ def add_mkdocs_run_deps() -> None:
     # pydantic_version = re.search(r'^VERSION ?= (["\'])(.+)\1', version_py, flags=re.M).group(2)
 
     toydl_version = "0.2.0"
-    mkdocs_run_deps = json.dumps([f'toydl=={toydl_version}'])
-    logger.info('Setting mkdocs_run_deps=%s', mkdocs_run_deps)
+    mkdocs_run_deps = json.dumps([f"toydl=={toydl_version}"])
+    logger.info("Setting mkdocs_run_deps=%s", mkdocs_run_deps)
 
     html = f"""\
     <script>
     window.mkdocs_run_deps = {mkdocs_run_deps}
     </script>
 """
-    path = DOCS_DIR / 'theme/mkdocs_run_deps.html'
+    path = DOCS_DIR / "theme/mkdocs_run_deps.html"
     path.write_text(html)
 
 
@@ -107,15 +103,20 @@ def upgrade_python(markdown: str) -> str:
                     continue
                 last_code = tab_code
 
-            content = indent(f'{prefix}\n{tab_code}```{numbers}', ' ' * 4)
+            content = indent(f"{prefix}\n{tab_code}```{numbers}", " " * 4)
             output.append(f'=== "Python 3.{minor_version} and above"\n\n{content}')
 
         if len(output) == 1:
             return match.group(0)
         else:
-            return '\n\n'.join(output)
+            return "\n\n".join(output)
 
-    return re.sub(r'^(``` *py.*?)\n(.+?)^```(\s+(?:^\d+\. .+?\n)+)', add_tabs, markdown, flags=re.M | re.S)
+    return re.sub(
+        r"^(``` *py.*?)\n(.+?)^```(\s+(?:^\d+\. .+?\n)+)",
+        add_tabs,
+        markdown,
+        flags=re.M | re.S,
+    )
 
 
 def _upgrade_code(code: str, min_version: int) -> str:
@@ -143,12 +144,17 @@ def insert_json_output(markdown: str) -> str:
             ind, json_text = m2.groups()
             json_text = indent(json.dumps(json.loads(json_text), indent=2), ind)
             # no trailing fence as that's not part of code
-            return f'\n{ind}```\n\n{ind}JSON output:\n\n{ind}```json\n{json_text}\n'
+            return f"\n{ind}```\n\n{ind}JSON output:\n\n{ind}```json\n{json_text}\n"
 
         code = re.sub(r'\n( *)"""(.*?)\1"""\n$', replace_last_print, code, flags=re.S)
-        return f'{start}{attrs}{code}{start}\n'
+        return f"{start}{attrs}{code}{start}\n"
 
-    return re.sub(r'(^ *```)([^\n]*?output="json"[^\n]*?\n)(.+?)\1', replace_json, markdown, flags=re.M | re.S)
+    return re.sub(
+        r'(^ *```)([^\n]*?output="json"[^\n]*?\n)(.+?)\1',
+        replace_json,
+        markdown,
+        flags=re.M | re.S,
+    )
 
 
 def remove_code_fence_attributes(markdown: str) -> str:
@@ -161,10 +167,11 @@ def remove_code_fence_attributes(markdown: str) -> str:
 
     def remove_attrs(match: re.Match[str]) -> str:
         suffix = re.sub(
-            r' (?:test|lint|upgrade|group|requires|output|rewrite_assert)=".+?"', '', match.group(2), flags=re.M
+            r' (?:test|lint|upgrade|group|requires|output|rewrite_assert)=".+?"',
+            "",
+            match.group(2),
+            flags=re.M,
         )
-        return f'{match.group(1)}{suffix}'
+        return f"{match.group(1)}{suffix}"
 
-    return re.sub(r'^( *``` *py)(.*)', remove_attrs, markdown, flags=re.M)
-
-
+    return re.sub(r"^( *``` *py)(.*)", remove_attrs, markdown, flags=re.M)

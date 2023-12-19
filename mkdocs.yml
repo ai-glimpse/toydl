@@ -10,7 +10,9 @@ copyright: Copyright &copy; 2022 Xiangzhuang Shen
 nav:
   - Home: index.md
   - Getting started:
-      - Quick Start: quickstart.md
+      - Quick Start:
+          - Installation: quickstart/install.md
+          - MLP: quickstart/mlp.md
   - API References:
       - Operator: api/operator.md
       - Context: api/context.md
