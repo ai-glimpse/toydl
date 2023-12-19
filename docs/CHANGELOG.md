@@ -1,5 +1,10 @@
 # Changelog
 
+[Unreleased]
+
+### Changed
+- Poetry: Update dependencies versions
+
 ## [0.2.0] - 2023-10-10
 
 ### Added

@@ -97,7 +97,9 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.details
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      url_download: true
+      url_max_size: 33554432
   - pymdownx.tabbed
   - abbr
   - admonition
