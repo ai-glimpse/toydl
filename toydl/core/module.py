@@ -20,20 +20,20 @@ class Module:
         return self.__dict__["_modules"].values()
 
     def train(self):
-        """Set the mode of this module and all descendent modules to `train`."""
+        """Set the mode of this module and all descendant modules to `train`."""
         self.training = True
         for m in self.modules():
             m.training = True
 
     def eval(self):
-        """Set the mode of this module and all descendent modules to `eval`."""
+        """Set the mode of this module and all descendant modules to `eval`."""
         self.training = False
         for m in self.modules():
             m.training = False
 
     def named_parameters(self):
         """
-        Collect all the parameters of this module and its descendents.
+        Collect all the parameters of this module and its descendants.
 
 
         :return list of pairs: Contains the name and :class:`Parameter` of each ancestor parameter.
@@ -42,14 +42,14 @@ class Module:
         # the module params
         for name, param in self._parameters.items():
             named_params.append((name, param))
-        # descendents params
+        # descendants params
         for module_name, module in self._modules.items():
             for param_name, param in module.named_parameters():
                 named_params.append((f"{module_name}.{param_name}", param))
         return named_params
 
     def parameters(self):
-        """Enumerate over all the parameters of this module and its descendents."""
+        """Enumerate over all the parameters of this module and its descendants."""
         params = [param for name, param in self.named_parameters()]
         return params
 
@@ -85,33 +85,6 @@ class Module:
 
     def forward(self, *args, **kwargs):
         assert False, "Not Implemented"
-
-    def __repr__(self):
-        def _add_indent(s_, num_spaces):
-            s = s_.split("\n")
-            if len(s) == 1:
-                return s_
-            first = s.pop(0)
-            s = [(num_spaces * " ") + line for line in s]
-            s = "\n".join(s)
-            s = first + "\n" + s
-            return s
-
-        child_lines = []
-
-        for key, module in self._modules.items():
-            mod_str = repr(module)
-            mod_str = _add_indent(mod_str, 2)
-            child_lines.append("(" + key + "): " + mod_str)
-        lines = child_lines
-
-        main_str = self.__class__.__name__ + "("
-        if lines:
-            # simple one-liner info, which most builtin Modules will use
-            main_str += "\n  " + "\n  ".join(lines) + "\n"
-
-        main_str += ")"
-        return main_str
 
 
 class Parameter:
