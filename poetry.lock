@@ -1897,6 +1897,25 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "pydeps"
+version = "1.12.17"
+description = "Display module dependencies"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pydeps-1.12.17-py3-none-any.whl", hash = "sha256:4fb2e86071c78c1b85a1c63745a267d100e91daf6bab2f14331b3c77433b58b4"},
+    {file = "pydeps-1.12.17.tar.gz", hash = "sha256:c308e8355a1e77ff0af899d6f9f1665d4eb07019692dba9fb1dc1cab05df36a4"},
+]
+
+[package.dependencies]
+stdlib-list = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "pyflakes"
 version = "3.1.0"
 description = "passive checker of Python programs"
@@ -2307,6 +2326,29 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "stdlib-list"
+version = "0.10.0"
+description = "A list of Python Standard Libraries (2.7 through 3.12)."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "stdlib_list-0.10.0-py3-none-any.whl", hash = "sha256:b3a911bc441d03e0332dd1a9e7d0870ba3bb0a542a74d7524f54fb431256e214"},
+    {file = "stdlib_list-0.10.0.tar.gz", hash = "sha256:6519c50d645513ed287657bfe856d527f277331540691ddeaf77b25459964a14"},
+]
+
+[package.extras]
+dev = ["build", "stdlib-list[doc,lint,test]"]
+doc = ["furo", "sphinx"]
+lint = ["black", "mypy", "ruff"]
+support = ["sphobjinv"]
+test = ["coverage[toml]", "pytest", "pytest-cov"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "termcolor"
 version = "2.4.0"
 description = "ANSI color formatting for output in terminal"
@@ -2650,4 +2692,4 @@ full = ["tqdm"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9, <4.0"
-content-hash = "042bb1f9ac5fff898362f301fd01843c6127039bffbbc634dfe1e2438bb99a52"
+content-hash = "e2e64fff41de90dd8d0cf1cb517300f4114346a7b0e7ae4345d5d114d037e425"

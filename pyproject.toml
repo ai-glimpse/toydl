@@ -45,6 +45,7 @@ full = ["tqdm"]
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.7.0"
 pre-commit = "^3.5.0"
+pydeps = "^1.12.17"
 
 [tool.poetry.group.lint.dependencies]
 black = "^22.8.0"
@@ -138,3 +139,10 @@ fail_under = 90
 precision = 1
 skip_empty = true
 sort = "-Cover"
+
+[tool.pydeps]
+max_bacon = 4
+exclude = ["matplotlib"]
+verbose = 0
+pylib = false
+show_deps = true
