@@ -45,9 +45,8 @@ class SGD(Optimizer):
         for p in self.parameters:
             if p.value is None:
                 continue
-            if hasattr(p.value, "derivative"):
-                if p.value.derivative is not None:
-                    p.value.derivative = None
+            if hasattr(p.value, "derivative") and p.value.derivative is not None:
+                p.value.derivative = None
 
     def step(self) -> None:
         """

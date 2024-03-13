@@ -34,7 +34,7 @@ _var_count: int = 0
 
 class Scalar:
     """
-    A reimplementation of scalar values for autodifferentiation
+    A reimplementation of scalar values for auto-differentiation
     tracking. Scalar Variables behave as close as possible to standard
     Python numbers while also tracking the operations that led to the
     number's creation. They can only be manipulated by
@@ -127,7 +127,7 @@ class Scalar:
     def accumulate_derivative(self, x: Any) -> None:
         """
         Add `x` to the derivative accumulated on this variable.
-        Should only be called during autodifferentiation on leaf variables.
+        Should only be called during auto-differentiation on leaf variables.
 
         :param x: value to be accumulated
         """
@@ -242,8 +242,8 @@ class ScalarFunction:
         return wrap_tuple(cls.backward(ctx, d_out))  # type: ignore
 
     @classmethod
-    def _forward(cls, ctx: Context, *inps: float) -> float:
-        return cls.forward(ctx, *inps)  # type: ignore
+    def _forward(cls, ctx: Context, *inputs: float) -> float:
+        return cls.forward(ctx, *inputs)  # type: ignore
 
     @classmethod
     def apply(cls, *vals: "ScalarLike") -> Scalar:
