@@ -19,7 +19,7 @@ nav:
       - Scalar: api/scalar.md
       - Module: api/module.md
       - Optim: api/optim.md
-  - Changelog: CHANGELOG.md
+  - Changelog: changelog.md
 
 theme:
   name: material
