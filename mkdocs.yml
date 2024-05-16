@@ -14,6 +14,7 @@ nav:
           - Installation: quickstart/install.md
           - MLP: quickstart/mlp.md
   - API References:
+      - Dependency Graph: api/dep_graph.md
       - Operator: api/operator.md
       - Context: api/context.md
       - Scalar: api/scalar.md
