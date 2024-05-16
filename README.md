@@ -32,9 +32,6 @@ pip install toydl
 ## Documentation
 - [https://datahonor.com/toydl/](https://datahonor.com/toydl/)
 
-### Module Dependency Graph
-![Module Dependency Graph](./toydl.svg)
-
 
 ## Related Projects
 - [minitorch](https://github.com/minitorch/minitorch)
