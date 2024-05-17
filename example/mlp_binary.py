@@ -22,6 +22,8 @@ class MLPBinaryClassifyModel:
         return y_pred, loss
 
     def evaluate(self, dateset: SimpleDataset) -> Tuple[float, int]:
+        # switch to eval mode
+        self.net.eval()
         total_loss = 0.0
         correct = 0
         for x, y in dateset:
@@ -31,6 +33,9 @@ class MLPBinaryClassifyModel:
             else:
                 correct += 1 if y_pred.data < 0.5 else 0
             total_loss += loss.data
+
+        # switch back to train mode
+        self.net.train()
 
         return total_loss, correct
 
