@@ -3,7 +3,7 @@ import random
 from typing import List
 
 from toydl.core.module import Module
-from toydl.core.scalar import Scalar
+from toydl.core.scalar.scalar import Scalar
 
 
 class Linear(Module):
