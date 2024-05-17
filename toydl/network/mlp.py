@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 from toydl.core.module import Module
-from toydl.core.scalar.scalar import Scalar
+from toydl.core.scalar import Scalar
 from toydl.layer.linear import Linear
 
 

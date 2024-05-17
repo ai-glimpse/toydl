@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from toydl.core.scalar.scalar import Scalar
+from toydl.core.scalar import Scalar
 from toydl.loss.base import LossBase
 
 
