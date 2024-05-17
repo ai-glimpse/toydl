@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import toydl.dataset.simulation as simulation_dataset
 
 from toydl.core.optim import SGD, Momentum, Optimizer
-from toydl.core.scalar import Scalar
+from toydl.core.scalar.scalar import Scalar
 from toydl.dataset.simple import SimpleDataset
 from toydl.loss.cross_entropy import CrossEntropyLoss
 from toydl.network.mlp import MLPBinaryClassifyNetFactory, MLPConfig
@@ -78,6 +78,7 @@ class MLPBinaryClassifyModel:
         title: str = "loss plot",
         filename: str = "loss.png",
     ):
+        plt.clf()
         plt.plot(training_loss, "ro-", label="training loss")
         plt.plot(testing_loss, "g*-", label="test loss")
         plt.title(title)
