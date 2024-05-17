@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Iterable
 
 if TYPE_CHECKING:
-    from toydl.core.scalar.scalar import Scalar
+    import toydl.core.scalar.scalar as scalar
 
 
-def topological_sort(variable: Scalar) -> Iterable[Scalar]:
+def topological_sort(variable: "scalar.Scalar") -> Iterable["scalar.Scalar"]:
     """
     Computes the topological order of the computation graph.
 
@@ -16,7 +16,7 @@ def topological_sort(variable: Scalar) -> Iterable[Scalar]:
     variables = []
     visited = set()
 
-    def visit(var: Scalar):
+    def visit(var: "scalar.Scalar"):
         if var.is_constant():
             return
         if var.unique_id in visited:
@@ -31,7 +31,7 @@ def topological_sort(variable: Scalar) -> Iterable[Scalar]:
     return variables[::-1]
 
 
-def backpropagate(variable: Scalar, deriv: Any) -> None:
+def backpropagate(variable: "scalar.Scalar", deriv: Any) -> None:
     """
     Runs backpropagation on the computation graph in order to
     compute derivatives for the leave nodes.

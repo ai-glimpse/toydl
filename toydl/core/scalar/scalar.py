@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from abc import abstractmethod
 from typing import Any, Iterable, Optional, Tuple, Union
 
-import toydl.core.scalar.function as fn
+import toydl.core.operator as operators
 
 from toydl.core.scalar.bp import backpropagate
+from toydl.core.scalar.context import Context
 from toydl.core.scalar.history import ScalarHistory
 
 ScalarLike = Union[float, int, "Scalar"]
@@ -43,52 +45,52 @@ class Scalar:
         return "Scalar(%f)" % self.data
 
     def __mul__(self, b):
-        return fn.Mul.apply(self, b)
+        return Mul.apply(self, b)
 
     def __rmul__(self, b):
-        return fn.Mul.apply(b, self)
+        return Mul.apply(b, self)
 
     def __truediv__(self, b):
-        return fn.Mul.apply(self, fn.Inv.apply(b))
+        return Mul.apply(self, Inv.apply(b))
 
     def __rtruediv__(self, b):
-        return fn.Mul.apply(b, fn.Inv.apply(self))
+        return Mul.apply(b, Inv.apply(self))
 
     def __add__(self, b):
-        return fn.Add.apply(self, b)
+        return Add.apply(self, b)
 
     def __bool__(self):
         return bool(self.data)
 
     def __lt__(self, b):
-        return fn.LT.apply(self, b)
+        return LT.apply(self, b)
 
     def __gt__(self, b):
-        return fn.LT.apply(b, self)
+        return LT.apply(b, self)
 
     def __eq__(self, b):
-        return fn.EQ.apply(self, b)
+        return EQ.apply(self, b)
 
     def __sub__(self, b):
-        return fn.Add.apply(self, fn.Neg.apply(b))
+        return Add.apply(self, Neg.apply(b))
 
     def __rsub__(self, b):
-        return fn.Add.apply(b, fn.Neg.apply(self))
+        return Add.apply(b, Neg.apply(self))
 
     def __neg__(self):
-        return fn.Neg.apply(self)
+        return Neg.apply(self)
 
     def log(self):
-        return fn.Log.apply(self)
+        return Log.apply(self)
 
     def exp(self):
-        return fn.Exp.apply(self)
+        return Exp.apply(self)
 
     def sigmoid(self):
-        return fn.Sigmoid.apply(self)
+        return Sigmoid.apply(self)
 
     def relu(self):
-        return fn.ReLU.apply(self)
+        return ReLU.apply(self)
 
     @property
     def unique_id(self):
@@ -158,3 +160,191 @@ class Scalar:
         if d_output is None:
             d_output = 1.0
         backpropagate(self, d_output)
+
+
+class ScalarFunction:
+    """
+    A wrapper for a mathematical function that processes and produces
+    Scalar variables.
+
+    This is a static class and is never instantiated. We use `class`
+    here to group together the `forward` and `backward` code.
+    """
+
+    @staticmethod
+    @abstractmethod
+    def forward(*args: Any, **kwargs: Any) -> float:
+        raise NotImplementedError
+
+    @staticmethod
+    @abstractmethod
+    def backward(ctx: Context, d_output: float) -> Union[float, Tuple[float, ...]]:
+        raise NotImplementedError
+
+    @classmethod
+    def _backward(cls, ctx: Context, d_out: float) -> Tuple[float, ...]:
+        out = cls.backward(ctx, d_out)
+        if isinstance(out, tuple):
+            return out
+        return (out,)
+
+    @classmethod
+    def _forward(cls, ctx: Context, *inputs: float) -> float:
+        return cls.forward(ctx, *inputs)  # type: ignore
+
+    @classmethod
+    def apply(cls, *vals: ScalarLike) -> Scalar:
+        raw_vals = []
+        scalars = []
+        for v in vals:
+            if isinstance(v, Scalar):
+                scalars.append(v)
+                raw_vals.append(v.data)
+            else:
+                scalars.append(Scalar(v))
+                raw_vals.append(v)
+
+        # Create the context.py.
+        ctx = Context(False)
+
+        # Call forward with the variables.
+        c = cls._forward(ctx, *raw_vals)
+        assert isinstance(c, (float, int)), "Expected return type float got %s" % (
+            type(c)
+        )
+
+        # Create a new variable from the result with a new history.
+        back = ScalarHistory(cls, ctx, scalars)  # type: ignore
+        return Scalar(c, back)
+
+
+class Add(ScalarFunction):
+    """Addition function :math:`f(x, y) = x + y`"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float, b: float) -> float:
+        return a + b
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> Tuple[float, ...]:
+        return d_output, d_output
+
+
+class Log(ScalarFunction):
+    """Log function :math:`f(x) = log(x)`"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float) -> float:
+        ctx.save_for_backward(a)
+        return operators.log(a)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        a = ctx.saved_values[0]
+        return operators.log_back(a, d_output)
+
+
+class Mul(ScalarFunction):
+    """Multiplication function"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float, b: float) -> float:
+        ctx.save_for_backward(a, b)
+        return operators.mul(a, b)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        a, b = ctx.saved_values
+        return operators.mul_back(a, b, d_output)
+
+
+class Inv(ScalarFunction):
+    """Inverse function"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float) -> float:
+        ctx.save_for_backward(a)
+        return operators.inv(a)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        a = ctx.saved_values[0]
+        return operators.inv_back(a, d_output)
+
+
+class Neg(ScalarFunction):
+    """Negation function"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float) -> float:
+        return operators.neg(a)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        return operators.neg_back(d_output)
+
+
+class Sigmoid(ScalarFunction):
+    """Sigmoid function"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float) -> float:
+        ctx.save_for_backward(a)
+        return operators.sigmoid(a)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        a = ctx.saved_values[0]
+        return operators.sigmoid_back(a, d_output)
+
+
+class ReLU(ScalarFunction):
+    """ReLU function"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float) -> float:
+        ctx.save_for_backward(a)
+        return operators.relu(a)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        a = ctx.saved_values[0]
+        return operators.relu_back(a, d_output)
+
+
+class Exp(ScalarFunction):
+    """Exp function"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float) -> float:
+        ctx.save_for_backward(a)
+        return operators.exp(a)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        a = ctx.saved_values[0]
+        return operators.exp_back(a, d_output)
+
+
+class LT(ScalarFunction):
+    """Less-than function :math:`f(x) =` 1.0 if x is less than y else 0.0"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float, b: float) -> float:
+        return operators.lt(a, b)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
+        return 0.0, 0.0
+
+
+class EQ(ScalarFunction):
+    """Equal function :math:`f(x) =` 1.0 if x is equal to y else 0.0"""
+
+    @staticmethod
+    def forward(ctx: Context, a: float, b: float) -> float:
+        return operators.eq(a, b)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
+        return 0.0, 0.0

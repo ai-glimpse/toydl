@@ -84,7 +84,7 @@ class MLPBinaryClassifyModel:
         plt.legend()
         plt.tight_layout()
         plt.savefig(filename, dpi=300)
-        plt.show()
+        # plt.show()
 
 
 # --8<-- [start:gen_dateset]
