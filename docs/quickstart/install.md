@@ -5,7 +5,7 @@
 `pip install toydl`
 
 ## Check the version
-```py title="Example" requires="3.10"
+```python
 import toydl
 import importlib.metadata
 

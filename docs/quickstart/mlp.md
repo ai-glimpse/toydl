@@ -7,7 +7,7 @@
 首先生成模拟数据，并将其分割维训练集和测试集
 
 ```python
---8<-- "toydl/example/mlp_binary.py:gen_dateset"
+--8<-- "example/mlp_binary.py:gen_dateset"
 ```
 
 
@@ -74,14 +74,14 @@ training_loss, testing_loss, test_result = mlp_model.train(
 ## MLP完整训练步骤
 
 ```python
---8<-- "toydl/example/mlp_binary.py:model"
+--8<-- "example/mlp_binary.py:model"
 ```
 
 
 ## 实验完整代码
 
-??? note "本示例的完整代码: `toydl/example/mlp_binary.py`"
+??? note "本示例的完整代码: `example/mlp_binary.py`"
 
     ```python
-    --8<-- "toydl/example/mlp_binary.py"
+    --8<-- "example/mlp_binary.py"
     ```
