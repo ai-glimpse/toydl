@@ -5,6 +5,9 @@
 ### Changed
 - Poetry: Update dependencies versions
 
+### Docs
+- Fix mlp example: switch mode to `eval` before testing (#48)
+
 ## [0.2.0] - 2023-10-10
 
 ### Added
