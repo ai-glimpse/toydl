@@ -78,13 +78,14 @@ class MLPBinaryClassifyModel:
         title: str = "loss plot",
         filename: str = "loss.png",
     ):
+        plt.clf()
         plt.plot(training_loss, "ro-", label="training loss")
         plt.plot(testing_loss, "g*-", label="test loss")
         plt.title(title)
         plt.legend()
         plt.tight_layout()
         plt.savefig(filename, dpi=300)
-        # plt.show()
+        plt.show()
 
 
 # --8<-- [start:gen_dateset]

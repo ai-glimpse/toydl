@@ -59,7 +59,7 @@ class SimpleDataset(DataSetBase):
         plt.tight_layout()
         if filename is not None:
             plt.savefig(filename, dpi=300)
-        plt.show()
+        # plt.show()
 
 
 if __name__ == "__main__":
