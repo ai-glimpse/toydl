@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from toydl.core.scalar import Scalar
 
@@ -95,13 +95,12 @@ class Parameter:
     any value for testing.
     """
 
-    def __init__(self, x=None, name=None):
+    def __init__(self, value: Scalar, name: Optional[str] = None):
         """
-
-        :param x: the value of parameter
+        :param value: the value of parameter
         :param name: the name of parameter
         """
-        self.value = x
+        self.value = value
         self.name = name
         # 这里设置`requires_grad_`为True可以将当前参数的值,即对应的Scalar instance
         self.value.requires_grad_(True)
@@ -111,19 +110,9 @@ class Parameter:
     def update(self, x: Any):
         r"""Update the parameter value.
 
-        ??? warning
-
-            注意这里在`update`方法也调用了`self.value.requires_grad_(True)`方法来
-            确保参数更新后依然是叶子节点，保证可以累计梯度计算并进行参数更新
-
         :param x: the parameter's new value
         """
-        # self.value.data = x.data
-        self.value = x
-        if hasattr(x, "requires_grad_"):
-            self.value.requires_grad_(True)
-            if self.name:
-                self.value.name = self.name
+        self.value.data = x.data
 
     def __repr__(self):
         return repr(self.value)
