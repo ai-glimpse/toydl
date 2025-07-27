@@ -5,7 +5,7 @@ from toydl.core.scalar import Scalar
 
 class Module:
     """
-    Modules form a tree that store parameters and other submodules.
+    Modules form a tree that stores parameters and other submodules.
     They make up the basis of neural network stacks.
 
     """
@@ -102,7 +102,7 @@ class Parameter:
         """
         self.value = value
         self.name = name
-        # 这里设置`requires_grad_`为True可以将当前参数的值,即对应的Scalar instance
+        # 这里设置`requires_grad_`为 True 可以将当前参数的值，即对应的 Scalar instance
         self.value.requires_grad_(True)
         if self.name:
             self.value.name = self.name

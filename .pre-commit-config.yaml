@@ -9,22 +9,20 @@ repos:
         exclude: .+\.csv
       - id: mixed-line-ending
         args: [--fix=lf]
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.12.4
     hooks:
-      - id: black
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        args: ["--profile", "black"]
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.1.1
-    hooks:
-      - id: flake8
-        args: ['--max-line-length=120']
+      # Run the linter.
+      - id: ruff
+        args: ["--config=pyproject.toml"]
+      # Run the formatter.
+      - id: ruff-format
+        args: ["--config=pyproject.toml"]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.14.1  # Use the sha / tag you want to point at
+    rev: v1.17.0  # Use the sha / tag you want to point at
     hooks:
       - id: mypy
-        args: ["--install-types", "--non-interactive", "--ignore-missing-imports"]
+        args: ["--install-types", "--non-interactive", "--ignore-missing-imports", "--check-untyped-defs",
+               "--allow-untyped-decorators",
+        ]
