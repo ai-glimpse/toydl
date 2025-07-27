@@ -27,17 +27,26 @@ class MLPBinaryClassifyNetFactory(Module):
         return config
 
     def __construct_layers(self):
+        if self.config.hidden_layer_num == 0:
+            setattr(
+                self,
+                "layer_input_output",
+                Linear(self.config.in_size, self.config.out_size),
+            )
+            self.order_layer_names = ["layer_input_output"]
+            return
+
         order_layer_names = []
         # input layer
         setattr(
             self,
-            "layer_input",
+            "layer_input_hidden_0",
             Linear(self.config.in_size, self.config.hidden_layer_size),
         )
         order_layer_names.append("layer_input")
-        # hidden layers
-        for layer_index in range(self.config.hidden_layer_num):
-            middle_layer_name = f"layer_hidden_{layer_index + 1}"
+        # hidden layers: 目前 layer_input 和 layer_output 之间已经有了一个隐层，所以这里构建额外 hidden_layer_num - 1 个隐层
+        for layer_index in range(self.config.hidden_layer_num - 1):
+            middle_layer_name = f"layer_hidden_{layer_index}_{layer_index + 1}"
             setattr(
                 self,
                 middle_layer_name,
@@ -48,7 +57,7 @@ class MLPBinaryClassifyNetFactory(Module):
         # output layers
         setattr(
             self,
-            "layer_output",
+            "layer_hidden_output",
             Linear(self.config.hidden_layer_size, self.config.out_size),
         )
         order_layer_names.append("layer_output")
@@ -66,6 +75,8 @@ class MLPBinaryClassifyNetFactory(Module):
 
 if __name__ == "__main__":
     mlp_config = MLPConfig(
-        in_size=2, out_size=1, hidden_layer_size=10, hidden_layer_num=5
+        in_size=2, out_size=1, hidden_layer_size=3, hidden_layer_num=1
     )
     mlp = MLPBinaryClassifyNetFactory(mlp_config)
+    for p in mlp.named_parameters():
+        print(p)
