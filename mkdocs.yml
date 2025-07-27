@@ -116,7 +116,7 @@ plugins:
           options:
             docstring_style: sphinx
             docstring_options:
-              ignore_init_summary: true
+#              ignore_init_summary: true
             docstring_section_style: table
 #            show_docstring_classes: true
 #            show_docstring_attributes: true
