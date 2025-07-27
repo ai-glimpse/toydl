@@ -20,8 +20,6 @@ nav:
       - Optim: api/optim.md
       - Dependency Graph: api/dep_graph.md
 
-  - Changelog: changelog.md
-
 theme:
   name: material
 #  custom_dir: 'docs/theme'

@@ -9,7 +9,7 @@ from toydl.core.scalar import Scalar
 class Linear(Module):
     def __init__(self, in_size, out_size):
         super().__init__()
-        self.weights = []
+        self.weights = []  # type: ignore[var-annotated]
         self.bias = []
         for i in range(in_size):
             self.weights.append([])
