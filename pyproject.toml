@@ -59,15 +59,6 @@ docs = [
 Homepage = "https://shenxiangzhuang.github.io/toydl"
 Repository = "https://github.com/shenxiangzhuang/toydl"
 
-
-[tool.uv]
-default-groups = [
-    "dev",
-    "lint",
-    "test",
-    "docs",
-]
-
 [[tool.uv.index]]
 name = "tsinghua"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"

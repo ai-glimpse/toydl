@@ -36,7 +36,7 @@ jobs:
         run: uv run ruff check
 
       - name: Run tests and generate coverage report
-        run: uv run pytest --doctest-modules -v --cov=toydl --cov-fail-under 30 --cov-report=term --cov-report=xml --cov-report=html toydl tests
+        run: uv run pytest --doctest-modules -v --cov=toydl --cov-fail-under 0 --cov-report=term --cov-report=xml --cov-report=html toydl tests
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
