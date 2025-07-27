@@ -13,7 +13,7 @@ class Module:
     def __init__(self):
         self._modules = {}
         self._parameters = {}
-        self.training = True
+        self.training = True  # TODO: 这里的 `training` 看起来并没有真正生效
 
     def modules(self):
         """Return the direct child modules of this module."""
