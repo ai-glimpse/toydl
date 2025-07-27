@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import abc
 from abc import abstractmethod
 from typing import Any, Iterable, Optional, Tuple, Union
 
@@ -163,7 +164,7 @@ class Scalar:
         backpropagate(self, d_output)
 
 
-class ScalarFunction:
+class ScalarFunction(abc.ABC):
     """
     A wrapper for a mathematical function that processes and produces
     Scalar variables.
@@ -205,18 +206,16 @@ class ScalarFunction:
                 scalars.append(Scalar(v))
                 raw_vals.append(v)
 
-        # Create the context.py.
-        ctx = Context(False)
-
         # Call forward with the variables.
+        ctx = Context()
         c = cls.forward(ctx, *raw_vals)
-        assert isinstance(c, (float, int)), "Expected return type float got %s" % (
-            type(c)
+        assert isinstance(c, (float, int)), (
+            f"Expected return type float or int got {type(c)}"
         )
 
         # Create a new variable from the result with a new history.
-        back = ScalarHistory(cls, ctx, scalars)  # type: ignore
-        return Scalar(c, back)
+        history = ScalarHistory(cls, ctx, scalars)  # type: ignore
+        return Scalar(c, history)
 
 
 class Add(ScalarFunction):

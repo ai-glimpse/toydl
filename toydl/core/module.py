@@ -73,18 +73,20 @@ class Module:
         else:
             super().__setattr__(key, val)
 
-    def __getattr__(self, key):
+    def __getattr__(self, key) -> Any:
         if key in self.__dict__["_parameters"]:
             return self.__dict__["_parameters"][key]
 
         if key in self.__dict__["_modules"]:
             return self.__dict__["_modules"][key]
 
+        return super().__getattribute__(key)
+
     def __call__(self, *args, **kwargs):
         return self.forward(*args, **kwargs)
 
     def forward(self, *args, **kwargs):
-        assert False, "Not Implemented"
+        raise NotImplementedError
 
 
 class Parameter:
@@ -107,7 +109,7 @@ class Parameter:
         if self.name:
             self.value.name = self.name
 
-    def update(self, x: Any):
+    def update(self, x: Scalar) -> None:
         r"""Update the parameter value.
 
         :param x: the parameter's new value
