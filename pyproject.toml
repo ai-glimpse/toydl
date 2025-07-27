@@ -43,11 +43,15 @@ test = [
     "pytest-sugar>=0.9.7,<0.10",
 ]
 docs = [
-    "mkdocs>=1.4.0,<2",
-    "mkdocs-material>=8.5.3,<9",
-    "mkdocs-material-extensions>=1.0.3,<2",
-    "mkdocstrings[python]>=0.23.0,<0.24",
-    "mkdocs-autorefs>=0.5.0,<0.6",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocs-material-extensions",
+    "mkdocstrings",
+    "mkdocs-bibtex",
+    "mkdocstrings-python",
+    "mkdocs-autorefs",
+    "mkdocs-git-committers-plugin-2",
+    "mkdocs-git-revision-date-localized-plugin",
 ]
 
 [project.urls]
