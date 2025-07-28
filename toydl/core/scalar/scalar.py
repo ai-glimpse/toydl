@@ -129,6 +129,7 @@ class Scalar:
         return self.history is not None and self.history.last_fn is None
 
     def is_constant(self) -> bool:
+        # TODO: history is always not None currently
         return self.history is None
 
     @property

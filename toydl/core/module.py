@@ -104,7 +104,7 @@ class Parameter:
         """
         self.value = value
         self.name = name
-        # 这里设置`requires_grad_`为 True 可以将当前参数的值，即对应的 Scalar instance
+        # 这里设置`requires_grad_`为 True，表示这些参数是可训练的(可累计梯度)
         self.value.requires_grad_(True)
         if self.name:
             self.value.name = self.name
