@@ -28,14 +28,14 @@ class Scalar:
     def __init__(
         self,
         v: float,
-        history: ScalarHistory = ScalarHistory(),
+        history: ScalarHistory | None = None,
         name: Optional[str] = None,
     ):
         global _var_count
         _var_count += 1
         self._unique_id: int = _var_count
         self.data: float = float(v)
-        self.history: ScalarHistory = history
+        self.history = history
         self.derivative: Optional[float] = None
         if name is not None:
             self.name = name
@@ -129,7 +129,6 @@ class Scalar:
         return self.history is not None and self.history.last_fn is None
 
     def is_constant(self) -> bool:
-        # TODO: history is always not None currently
         return self.history is None
 
     @property
