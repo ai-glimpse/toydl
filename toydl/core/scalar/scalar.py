@@ -43,7 +43,10 @@ class Scalar:
             self.name = str(self.unique_id)
 
     def __repr__(self) -> str:
-        return f"Scalar(name={self.name}, unique_id={self.unique_id}, data={self.data}, derivative={self.derivative})"
+        return (
+            f"Scalar(name={self.name}, unique_id={self.unique_id}, data={self.data:.4f}, "
+            f"derivative={round(self.derivative, 4) if self.derivative else None})"
+        )
 
     def __mul__(self, b):
         return Mul.apply(self, b)

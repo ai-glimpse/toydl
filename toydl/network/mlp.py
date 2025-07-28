@@ -1,3 +1,4 @@
+from enum import StrEnum
 from dataclasses import dataclass
 from typing import List
 
@@ -6,12 +7,18 @@ from toydl.core.scalar import Scalar
 from toydl.layer.linear import Linear
 
 
+class ActivationType(StrEnum):
+    RELU = "relu"
+    SIGMOID = "sigmoid"
+
+
 @dataclass
 class MLPConfig:
     in_size: int
     out_size: int
     hidden_layer_num: int
     hidden_layer_size: int
+    hidden_activation: ActivationType = ActivationType.RELU
 
 
 class MLPBinaryClassifyNetFactory(Module):
@@ -36,7 +43,7 @@ class MLPBinaryClassifyNetFactory(Module):
             self.order_layer_names = ["layer_input_output"]
             return
 
-        order_layer_names = []
+        order_layer_names: list[str] = []
         # input layer
         setattr(
             self,
@@ -64,34 +71,21 @@ class MLPBinaryClassifyNetFactory(Module):
 
         self.order_layer_names = order_layer_names
 
-    def forward(self, x) -> Scalar:
+    def forward(self, x: list[Scalar]) -> Scalar:
         for layer_name in self.order_layer_names:
             x = getattr(self, layer_name).forward(x)
             if "output" not in layer_name:
-                x = [h.relu() for h in x]
-        x = x[0].sigmoid()
-        return x
+                if self.config.hidden_activation == ActivationType.RELU:
+                    x = [h.relu() for h in x]
+                elif self.config.hidden_activation == ActivationType.SIGMOID:
+                    x = [h.sigmoid() for h in x]
+        # note that our output size is 1
+        output = x[0].sigmoid()
+        return output
 
 
 if __name__ == "__main__":
-    from toydl.core.scalar import Scalar
-    from toydl.core.scalar.bp import topological_sort, backpropagate  # noqa: F401
-
     mlp_config = MLPConfig(
         in_size=2, out_size=1, hidden_layer_size=3, hidden_layer_num=1
     )
     mlp = MLPBinaryClassifyNetFactory(mlp_config)
-    for p in mlp.named_parameters():
-        print(p)
-
-    x1 = Scalar(1.0, name="x1")
-    x2 = Scalar(2.0, name="x2")
-    xs = (x1, x2)
-    y = mlp.forward(xs)
-    y.name = "y"
-
-    y.backward()
-
-    print("After backward:")
-    for p in mlp.named_parameters():
-        print(p)
