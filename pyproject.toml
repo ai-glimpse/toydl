@@ -22,7 +22,6 @@ dependencies = ["matplotlib>=3.8.2,<4"]
 
 [project.optional-dependencies]
 dev = [
-    "ipykernel>=6.30.0",
     "marimo>=0.14.13",
     "tqdm>=4.0.0,<5",
     "ipython>=8.7.0,<9",
@@ -30,7 +29,6 @@ dev = [
     "pydeps>=1.12.17,<2",
     "mypy>=0.981,<0.982",
     "ruff>=0.12.5",
-    "jupyterlab>=4.4.5",
     "ty>=0.0.1a16",
 ]
 test = [
@@ -91,3 +89,9 @@ exclude = ["matplotlib"]
 verbose = 0
 pylib = false
 show_deps = true
+
+
+# For zed editor
+[tool.pyright]
+include = ["toydl"]
+ignore = ["playground/**"]
