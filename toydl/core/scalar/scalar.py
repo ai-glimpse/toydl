@@ -48,37 +48,37 @@ class Scalar:
             f"derivative={round(self.derivative, 4) if self.derivative else None})"
         )
 
-    def __mul__(self, b):
+    def __mul__(self, b: ScalarLike):
         return Mul.apply(self, b)
 
-    def __rmul__(self, b):
+    def __rmul__(self, b: ScalarLike):
         return Mul.apply(b, self)
 
-    def __truediv__(self, b):
+    def __truediv__(self, b: ScalarLike):
         return Mul.apply(self, Inv.apply(b))
 
-    def __rtruediv__(self, b):
+    def __rtruediv__(self, b: ScalarLike):
         return Mul.apply(b, Inv.apply(self))
 
-    def __add__(self, b):
+    def __add__(self, b: ScalarLike):
         return Add.apply(self, b)
 
     def __bool__(self):
         return bool(self.data)
 
-    def __lt__(self, b):
+    def __lt__(self, b: ScalarLike):
         return LT.apply(self, b)
 
-    def __gt__(self, b):
+    def __gt__(self, b: ScalarLike):
         return LT.apply(b, self)
 
-    def __eq__(self, b):
+    def __eq__(self, b: ScalarLike):  # type: ignore[override]
         return EQ.apply(self, b)
 
-    def __sub__(self, b):
+    def __sub__(self, b: ScalarLike):
         return Add.apply(self, Neg.apply(b))
 
-    def __rsub__(self, b):
+    def __rsub__(self, b: ScalarLike):
         return Add.apply(b, Neg.apply(self))
 
     def __neg__(self):
@@ -199,8 +199,8 @@ class ScalarFunction(abc.ABC):
 
     @classmethod
     def apply(cls, *vals: ScalarLike) -> Scalar:
-        raw_vals = []
-        scalars = []
+        raw_vals: list[float] = []
+        scalars: list[Scalar] = []
         for v in vals:
             if isinstance(v, Scalar):
                 scalars.append(v)
