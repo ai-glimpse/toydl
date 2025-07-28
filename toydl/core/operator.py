@@ -38,7 +38,7 @@ def eq(x: float, y: float) -> float:
     return float(abs(x - y) <= 1e-8)
 
 
-def max_(x, y):
+def max_(x: float, y: float) -> float:
     return x if x > y else y
 
 

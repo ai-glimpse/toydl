@@ -22,12 +22,12 @@ class Linear(Module):
                 self.add_parameter(f"bias_{j}", Scalar(2 * (random.random() - 0.5)))
             )
 
-    def forward(self, inputs: list[Scalar]) -> list[Scalar]:
+    def forward(self, xs: list[Scalar]) -> list[Scalar]:
         outputs: list[Scalar] = []
         n, m = len(self.weights), len(self.weights[0])
         for j in range(m):
             output = Scalar(0)
             for i in range(n):
-                output += self.weights[i][j].value * inputs[i] + self.bias[j].value
+                output += self.weights[i][j].value * xs[i] + self.bias[j].value
             outputs.append(output)
         return outputs

@@ -143,10 +143,7 @@ class Scalar:
         assert h.ctx is not None
 
         derivatives = h.last_fn.backward(h.ctx, d_output)
-        derivatives = (
-            derivatives if isinstance(derivatives, Iterable) else (derivatives,)
-        )
-        variables = h.inputs if isinstance(h.inputs, Iterable) else (h.inputs,)
+        variables = h.inputs
         var_derivatives = [
             (var, derivative)
             for (var, derivative) in zip(variables, derivatives)
@@ -256,7 +253,7 @@ class Mul(ScalarFunction):
         return operators.mul(a, b)
 
     @staticmethod
-    def _backward(ctx: Context, d_output: float) -> float:
+    def _backward(ctx: Context, d_output: float) -> tuple[float, float]:
         a, b = ctx.saved_values
         return operators.mul_back(a, b, d_output)
 

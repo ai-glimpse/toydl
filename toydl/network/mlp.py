@@ -1,6 +1,5 @@
 from enum import StrEnum
 from dataclasses import dataclass
-from typing import List
 
 from toydl.core.module import Module
 from toydl.core.scalar import Scalar
@@ -24,7 +23,7 @@ class MLPConfig:
 class MLPBinaryClassifyNetFactory(Module):
     def __init__(self, config: MLPConfig):
         super().__init__()
-        self.order_layer_names: List[str] = []
+        self.order_layer_names: list[str] = []
         self.config = self.__check_config(config)
         self.__construct_layers()
 
@@ -71,16 +70,16 @@ class MLPBinaryClassifyNetFactory(Module):
 
         self.order_layer_names = order_layer_names
 
-    def forward(self, x: list[Scalar]) -> Scalar:
+    def forward(self, xs: list[Scalar]) -> Scalar:
         for layer_name in self.order_layer_names:
-            x = getattr(self, layer_name).forward(x)
+            xs = getattr(self, layer_name).forward(xs)
             if "output" not in layer_name:
                 if self.config.hidden_activation == ActivationType.RELU:
-                    x = [h.relu() for h in x]
+                    xs = [h.relu() for h in xs]
                 elif self.config.hidden_activation == ActivationType.SIGMOID:
-                    x = [h.sigmoid() for h in x]
+                    xs = [h.sigmoid() for h in xs]
         # note that our output size is 1
-        output = x[0].sigmoid()
+        output = xs[0].sigmoid()
         return output
 
 
