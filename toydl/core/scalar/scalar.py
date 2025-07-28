@@ -43,7 +43,7 @@ class Scalar:
             self.name = str(self.unique_id)
 
     def __repr__(self) -> str:
-        return "Scalar(%f)" % self.data
+        return f"Scalar(name={self.name}, unique_id={self.unique_id}, data={self.data}, derivative={self.derivative})"
 
     def __mul__(self, b):
         return Mul.apply(self, b)
