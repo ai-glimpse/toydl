@@ -18,7 +18,7 @@ class Parameter:
         """
         self.value = value
         self.name = name
-        # 这里设置`requires_grad_`为 True，表示这些参数是可训练的(可累计梯度)
+        # Set `requires_grad_` to True, indicating that these parameters are trainable (can accumulate gradients)
         self.value.requires_grad_(True)
         if self.name:
             self.value.name = self.name
