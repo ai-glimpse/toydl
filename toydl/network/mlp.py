@@ -50,7 +50,7 @@ class MLPBinaryClassifyNetFactory(Module):
             Linear(self.config.in_size, self.config.hidden_layer_size),
         )
         order_layer_names.append("layer_input_hidden_0")
-        # hidden layers: 目前 layer_input 和 layer_output 之间已经有了一个隐层，所以这里构建额外 hidden_layer_num - 1 个隐层
+        # hidden layers: There is already one hidden layer between layer_input and layer_output, so we construct an additional hidden_layer_num - 1 hidden layers here.
         for layer_index in range(self.config.hidden_layer_num - 1):
             middle_layer_name = f"layer_hidden_{layer_index}_{layer_index + 1}"
             setattr(
