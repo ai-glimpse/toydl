@@ -7,15 +7,14 @@ from toydl.core.module import Parameter
 
 class Momentum(Optimizer):
     """
-    Stochastic Gradient Descent Optimizer
-
+    Momentum Optimizer
     """
 
     def __init__(
         self, parameters: Sequence[Parameter], lr: float = 0.01, momentum: float = 0.9
     ):
         """
-        Init the SGD optimizer
+        Init the Momentum optimizer
 
         :param parameters: the parameters that will be optimized
         :param lr: learning rate
@@ -33,12 +32,10 @@ class Momentum(Optimizer):
         for p in self.parameters:
             if hasattr(p.value, "derivative") and p.value.derivative is not None:
                 p.value.derivative = None
-        # Clear delta map
-        self.parameter_delta_map = {}
 
     def step(self) -> None:
         """
-        Run a sgd step to update parameter value
+        Run a momentum step to update parameter value
         """
         for p in self.parameters:
             if hasattr(p.value, "derivative") and p.value.derivative is not None:
