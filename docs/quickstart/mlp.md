@@ -111,10 +111,6 @@ def run():
   <img src="../../images/optimizer_comparison.png" alt="Optimizer Comparison" width="600" height="400">
 </p>
 
-从图中可以看出：
-- Momentum优化器通常收敛更快，损失下降更迅速
-- 虽然在训练早期SGD的损失波动较大，但最终两种优化器都能达到较好的效果
-- 测试损失（虚线）与训练损失（实线）的对比可以反映模型的泛化能力
 
 ## MLP完整训练步骤
 
