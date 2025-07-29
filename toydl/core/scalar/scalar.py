@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import abc
 from abc import abstractmethod
 from typing import Any, Iterable, Optional, Tuple, Union
 
@@ -27,14 +28,14 @@ class Scalar:
     def __init__(
         self,
         v: float,
-        history: ScalarHistory = ScalarHistory(),
+        history: ScalarHistory | None = None,
         name: Optional[str] = None,
     ):
         global _var_count
         _var_count += 1
         self._unique_id: int = _var_count
         self.data: float = float(v)
-        self.history: ScalarHistory = history
+        self.history = history
         self.derivative: Optional[float] = None
         if name is not None:
             self.name = name
@@ -42,39 +43,42 @@ class Scalar:
             self.name = str(self.unique_id)
 
     def __repr__(self) -> str:
-        return "Scalar(%f)" % self.data
+        return (
+            f"Scalar(name={self.name}, unique_id={self.unique_id}, data={self.data:.4f}, "
+            f"derivative={round(self.derivative, 4) if self.derivative else None})"
+        )
 
-    def __mul__(self, b):
+    def __mul__(self, b: ScalarLike):
         return Mul.apply(self, b)
 
-    def __rmul__(self, b):
+    def __rmul__(self, b: ScalarLike):
         return Mul.apply(b, self)
 
-    def __truediv__(self, b):
+    def __truediv__(self, b: ScalarLike):
         return Mul.apply(self, Inv.apply(b))
 
-    def __rtruediv__(self, b):
+    def __rtruediv__(self, b: ScalarLike):
         return Mul.apply(b, Inv.apply(self))
 
-    def __add__(self, b):
+    def __add__(self, b: ScalarLike):
         return Add.apply(self, b)
 
     def __bool__(self):
         return bool(self.data)
 
-    def __lt__(self, b):
+    def __lt__(self, b: ScalarLike):
         return LT.apply(self, b)
 
-    def __gt__(self, b):
+    def __gt__(self, b: ScalarLike):
         return LT.apply(b, self)
 
-    def __eq__(self, b):
+    def __eq__(self, b: ScalarLike):  # type: ignore[override]
         return EQ.apply(self, b)
 
-    def __sub__(self, b):
+    def __sub__(self, b: ScalarLike):
         return Add.apply(self, Neg.apply(b))
 
-    def __rsub__(self, b):
+    def __rsub__(self, b: ScalarLike):
         return Add.apply(b, Neg.apply(self))
 
     def __neg__(self):
@@ -139,10 +143,7 @@ class Scalar:
         assert h.ctx is not None
 
         derivatives = h.last_fn.backward(h.ctx, d_output)
-        derivatives = (
-            derivatives if isinstance(derivatives, Iterable) else (derivatives,)
-        )
-        variables = h.inputs if isinstance(h.inputs, Iterable) else (h.inputs,)
+        variables = h.inputs
         var_derivatives = [
             (var, derivative)
             for (var, derivative) in zip(variables, derivatives)
@@ -163,7 +164,7 @@ class Scalar:
         backpropagate(self, d_output)
 
 
-class ScalarFunction:
+class ScalarFunction(abc.ABC):
     """
     A wrapper for a mathematical function that processes and produces
     Scalar variables.
@@ -195,8 +196,8 @@ class ScalarFunction:
 
     @classmethod
     def apply(cls, *vals: ScalarLike) -> Scalar:
-        raw_vals = []
-        scalars = []
+        raw_vals: list[float] = []
+        scalars: list[Scalar] = []
         for v in vals:
             if isinstance(v, Scalar):
                 scalars.append(v)
@@ -205,18 +206,16 @@ class ScalarFunction:
                 scalars.append(Scalar(v))
                 raw_vals.append(v)
 
-        # Create the context.py.
-        ctx = Context(False)
-
         # Call forward with the variables.
+        ctx = Context()
         c = cls.forward(ctx, *raw_vals)
-        assert isinstance(c, (float, int)), "Expected return type float got %s" % (
-            type(c)
+        assert isinstance(c, (float, int)), (
+            f"Expected return type float or int got {type(c)}"
         )
 
         # Create a new variable from the result with a new history.
-        back = ScalarHistory(cls, ctx, scalars)  # type: ignore
-        return Scalar(c, back)
+        history = ScalarHistory(cls, ctx, scalars)  # type: ignore
+        return Scalar(c, history)
 
 
 class Add(ScalarFunction):
@@ -254,7 +253,7 @@ class Mul(ScalarFunction):
         return operators.mul(a, b)
 
     @staticmethod
-    def _backward(ctx: Context, d_output: float) -> float:
+    def _backward(ctx: Context, d_output: float) -> tuple[float, float]:
         a, b = ctx.saved_values
         return operators.mul_back(a, b, d_output)
 

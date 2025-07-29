@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Tuple
+from typing import Any
 
 
 @dataclass
@@ -9,12 +9,12 @@ class Context:
     """
 
     no_grad: bool = False
-    saved_values: Tuple[Any, ...] = ()
+    saved_values: tuple[Any, ...] = ()
 
     def save_for_backward(self, *values: Any) -> None:
         """Store the given `values` if they need to be used during backpropagation.
 
-        :param values: the values that should be saved for backward
+        :param values: The values that should be saved for backward
         """
         if self.no_grad:
             return

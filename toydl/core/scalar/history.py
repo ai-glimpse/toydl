@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Sequence
+from typing import TYPE_CHECKING, Sequence, Optional
 
 if TYPE_CHECKING:
     from toydl.core.scalar.scalar import Scalar, ScalarFunction
@@ -24,5 +24,5 @@ class ScalarHistory:
     """
 
     last_fn: Optional["ScalarFunction"] = None
-    ctx: Optional[Context] = None
+    ctx: Context | None = None
     inputs: Sequence["Scalar"] = ()

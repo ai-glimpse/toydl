@@ -16,12 +16,12 @@ class MLPBinaryClassifyModel:
     def __init__(self, mlp_config: MLPConfig):
         self.net = MLPBinaryClassifyNetFactory(mlp_config)
 
-    def forward_once(self, x: List[float], y: int) -> Tuple[Scalar, Scalar]:
-        y_pred = self.net.forward(tuple(Scalar(v) for v in x))
+    def forward_once(self, x: list[float], y: int) -> tuple[Scalar, Scalar]:
+        y_pred = self.net.forward(list(Scalar(v) for v in x))
         loss = CrossEntropyLoss().forward(y_true=y, y_pred=y_pred)
         return y_pred, loss
 
-    def evaluate(self, dateset: SimpleDataset) -> Tuple[float, int]:
+    def evaluate(self, dateset: SimpleDataset) -> tuple[float, int]:
         # switch to eval mode
         self.net.eval()
         total_loss = 0.0
@@ -46,7 +46,7 @@ class MLPBinaryClassifyModel:
         optimizer: Optimizer,
         max_epochs: int = 500,
     ) -> Tuple[List[float], List[float], str]:
-        training_loss, testing_loss = [], []
+        training_loss, testing_loss, test_correct = [], [], 0
         for epoch in range(1, max_epochs + 1):
             optimizer.zero_grad()
 

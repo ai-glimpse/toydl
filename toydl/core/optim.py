@@ -1,6 +1,6 @@
 import abc
 
-from typing import Dict, Sequence
+from typing import Sequence
 
 from toydl.core.module import Parameter
 
@@ -14,11 +14,11 @@ class Optimizer:
         self.parameters = parameters
 
     @abc.abstractmethod
-    def zero_grad(self):
+    def zero_grad(self) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def step(self):
+    def step(self) -> None:
         raise NotImplementedError
 
 
@@ -43,8 +43,6 @@ class SGD(Optimizer):
         Clear the grad/derivative value of parameter
         """
         for p in self.parameters:
-            if p.value is None:
-                continue
             if hasattr(p.value, "derivative") and p.value.derivative is not None:
                 p.value.derivative = None
 
@@ -53,8 +51,6 @@ class SGD(Optimizer):
         Run a sgd step to update parameter value
         """
         for p in self.parameters:
-            if p.value is None:
-                continue
             if hasattr(p.value, "derivative") and p.value.derivative is not None:
                 new_value = p.value - self.lr * p.value.derivative
                 p.update(new_value)
@@ -79,15 +75,13 @@ class Momentum(Optimizer):
         super().__init__(parameters)
         self.lr = lr
         self.momentum = momentum
-        self.parameter_delta_map: Dict[Parameter, float] = {}
+        self.parameter_delta_map: dict[Parameter, float] = {}
 
     def zero_grad(self) -> None:
         """
         Clear the grad/derivative value of parameter
         """
         for p in self.parameters:
-            if p.value is None:
-                continue
             if hasattr(p.value, "derivative") and p.value.derivative is not None:
                 p.value.derivative = None
         # Clear delta map
@@ -98,8 +92,6 @@ class Momentum(Optimizer):
         Run a sgd step to update parameter value
         """
         for p in self.parameters:
-            if p.value is None:
-                continue
             if hasattr(p.value, "derivative") and p.value.derivative is not None:
                 delta = (
                     -self.lr * p.value.derivative

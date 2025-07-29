@@ -13,8 +13,8 @@ def topological_sort(variable: "Scalar") -> Iterable["Scalar"]:
     :param variable: The right-most variable
     :return: Non-constant Variables in topological order starting from the right.
     """
-    variables = []
-    visited = set()
+    variables: list["Scalar"] = []
+    visited: set[int] = set()
 
     def visit(var: "Scalar"):
         if var.is_constant():
@@ -23,8 +23,8 @@ def topological_sort(variable: "Scalar") -> Iterable["Scalar"]:
             return
         visited.add(var.unique_id)
         if var.parents:
-            for child_var in var.parents:
-                visit(child_var)
+            for p in var.parents:
+                visit(p)
         variables.append(var)
 
     visit(variable)
