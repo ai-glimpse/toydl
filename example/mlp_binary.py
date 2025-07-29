@@ -133,13 +133,6 @@ def plot_multiple_optimizers(
 ):
     """
     Plot losses for multiple optimizers in one figure for comparison.
-
-    Args:
-        optimizer_results: Dictionary mapping optimizer names to their results
-                          (training_loss, testing_loss, test_result)
-        plot_type: Which losses to plot - "train", "test", or "both"
-        title: Title of the plot
-        filename: Filename to save the plot
     """
     plt.clf()
     plt.figure(figsize=(10, 6))
