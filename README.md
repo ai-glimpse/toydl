@@ -1,18 +1,17 @@
-<p align="center" style="font-size:40px; margin:0px 10px 0px 10px">
-    <em>ToyDL</em>
-</p>
-<p align="center">
-    <em>Deep Learning from Scratch</em>
-</p>
+# ToyDL: Deep Learning from Scratch
 
-<p align="center">
-<a href="https://codecov.io/gh/shenxiangzhuang/toydl" target="_blank">
-    <img src="https://codecov.io/gh/shenxiangzhuang/toydl/branch/master/graph/badge.svg" alt="Coverage">
-</a>
-<a href="https://pypi.org/project/toydl" target="_blank">
-    <img src="https://badge.fury.io/py/toydl.svg" alt="PyPI Package">
-</a>
-</p>
+
+[![Python](https://img.shields.io/pypi/pyversions/toydl.svg?color=%2334D058)](https://pypi.org/project/toydl/)
+[![PyPI](https://img.shields.io/pypi/v/toydl?color=%2334D058&label=pypi%20package)](https://pypi.org/project/toydl/)
+
+[![codecov](https://codecov.io/gh/ai-glimpse/toydl/graph/badge.svg?token=e2LQa7MF8s)](https://codecov.io/gh/ai-glimpse/toydl)
+[![Build Docs](https://github.com/ai-glimpse/toydl/actions/workflows/build_docs.yml/badge.svg)](https://github.com/ai-glimpse/toydl/actions/workflows/build_docs.yml)
+[![Test](https://github.com/ai-glimpse/toydl/actions/workflows/test.yml/badge.svg)](https://github.com/ai-glimpse/toydl/actions/workflows/test.yml)
+
+
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 
 ToyDL, as an education project, is aimed to make the
