@@ -184,7 +184,7 @@ def plot_multiple_optimizers(
         output_dir.mkdir(exist_ok=True, parents=True)
         save_path = output_dir / filename
     else:
-        save_path = Path(filename)
+        save_path = Path(f"./{filename}")
 
     plt.savefig(save_path, dpi=300)
     plt.show()
