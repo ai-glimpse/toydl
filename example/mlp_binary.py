@@ -46,7 +46,7 @@ class MLPBinaryClassifyModel:
         optimizer: Optimizer,
         max_epochs: int = 500,
     ) -> Tuple[List[float], List[float], str]:
-        training_loss, testing_loss = [], []
+        training_loss, testing_loss, test_correct = [], [], 0
         for epoch in range(1, max_epochs + 1):
             optimizer.zero_grad()
 
