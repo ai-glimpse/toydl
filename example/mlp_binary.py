@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Tuple
 
 import matplotlib.pyplot as plt
@@ -76,26 +77,10 @@ class MLPBinaryClassifyModel:
 
     # --8<-- [end:model]
 
-    @staticmethod
-    def plot_loss(
-        training_loss: List[float],
-        testing_loss: List[float],
-        title: str = "loss plot",
-        filename: str = "loss.png",
-    ):
-        plt.clf()
-        plt.plot(training_loss, "ro-", label="training loss")
-        plt.plot(testing_loss, "g*-", label="test loss")
-        plt.title(title)
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(filename, dpi=300)
-        plt.show()
-
 
 # --8<-- [start:gen_dateset]
 def get_dataset(n: int = 100) -> Tuple[SimpleDataset, SimpleDataset]:
-    data = simulation_dataset.simple(n)
+    data = simulation_dataset.diag(n)
     training_set, test_set = data.train_test_split(train_proportion=0.7)
 
     return training_set, test_set
@@ -118,9 +103,7 @@ def run_sgd(
     training_loss, testing_loss, test_result = mlp_model.train(
         training_set, test_set, sgd_optimizer, max_epochs=max_epochs
     )
-    mlp_model.plot_loss(
-        training_loss, testing_loss, title=f"SGD: {test_result}", filename="sgd.png"
-    )
+    return training_loss, testing_loss, test_result
 
 
 def run_momentum(
@@ -138,18 +121,82 @@ def run_momentum(
     training_loss, testing_loss, test_result = mlp_model.train(
         training_set, test_set, optimizer, max_epochs=max_epochs
     )
-    mlp_model.plot_loss(
-        training_loss,
-        testing_loss,
-        title=f"Momentum: {test_result}",
-        filename="momentum.png",
-    )
+    return training_loss, testing_loss, test_result
+
+
+def plot_multiple_optimizers(
+    optimizer_results: dict[str, tuple[list[float], list[float], str]],
+    plot_type: str = "both",  # "train", "test", or "both"
+    title: str = "Optimizer Comparison",
+    filename: str = "optimizer_comparison.png",
+    output_dir: Path | None = None,
+):
+    """
+    Plot losses for multiple optimizers in one figure for comparison.
+    """
+    plt.clf()
+    plt.figure(figsize=(10, 6))
+
+    colors = ["r", "g", "b", "c", "m", "y", "k"]
+    markers = ["o", "s", "^", "*", "x", "D", "v"]
+
+    color_idx = 0
+    for optimizer_name, (training_loss, testing_loss, _) in optimizer_results.items():
+        color = colors[color_idx % len(colors)]
+        marker = markers[color_idx % len(markers)]
+
+        if plot_type in ["train", "both"]:
+            plt.plot(
+                training_loss,
+                f"{color}-",
+                label=f"{optimizer_name} - Training",
+                marker=marker,
+                markevery=max(1, len(training_loss) // 10),
+            )
+
+        if plot_type in ["test", "both"]:
+            plt.plot(
+                testing_loss,
+                f"{color}--",
+                label=f"{optimizer_name} - Test",
+                marker=marker,
+                markevery=max(1, len(testing_loss) // 10),
+            )
+
+        color_idx += 1
+
+    plt.title(title)
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.grid(True, linestyle="--", alpha=0.7)
+    plt.tight_layout()
+
+    # Handle output directory
+    if output_dir is not None:
+        output_dir.mkdir(exist_ok=True, parents=True)
+        save_path = output_dir / filename
+    else:
+        save_path = Path(f"./{filename}")
+
+    plt.savefig(save_path, dpi=300)
+    plt.show()
+
+    # Print the test results
+    print("\nTest Results:")
+    for optimizer_name, (_, _, test_result) in optimizer_results.items():
+        print(f"{optimizer_name}: {test_result}")
 
 
 def run():
+    # Setup output directory using pathlib
+    current_file = Path(__file__)
+    image_dir = current_file.parent / "images"
+    image_dir.mkdir(exist_ok=True, parents=True)
+
     n = 100
     training_set, test_set = get_dataset(n)
-    training_set.plot(filename="training_set.png")
+    training_set.plot(filename=str(image_dir / "training_set.png"))
     mlp_config = MLPConfig(
         in_size=2, out_size=1, hidden_layer_size=10, hidden_layer_num=2
     )
@@ -157,8 +204,24 @@ def run():
     learning_rate = 0.01
     max_epochs = 500
 
-    run_sgd(mlp_config, training_set, test_set, learning_rate, max_epochs)
-    run_momentum(mlp_config, training_set, test_set, learning_rate, max_epochs)
+    sgd_training_loss, sgd_testing_loss, sgd_test_result = run_sgd(
+        mlp_config, training_set, test_set, learning_rate, max_epochs
+    )
+    momentum_training_loss, momentum_testing_loss, momentum_result = run_momentum(
+        mlp_config, training_set, test_set, learning_rate, max_epochs
+    )
+
+    # Plot comparison of optimizers
+    optimizer_results = {
+        "SGD": (sgd_training_loss, sgd_testing_loss, sgd_test_result),
+        "Momentum": (momentum_training_loss, momentum_testing_loss, momentum_result),
+    }
+    plot_multiple_optimizers(
+        optimizer_results,
+        title="Optimizer Loss Comparison",
+        filename="optimizer_comparison.png",
+        output_dir=image_dir,
+    )
 
 
 if __name__ == "__main__":
