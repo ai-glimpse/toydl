@@ -1,6 +1,6 @@
 [project]
 name = "toydl"
-version = "0.2.0"
+version = "0.3.0"
 description = "ToyDL: Deep Learning from Scratch"
 authors = [{ name = "Xiangzhuang Shen", email = "datahonor@gmail.com" }]
 requires-python = ">=3.12, <4.0"
