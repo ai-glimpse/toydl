@@ -9,5 +9,5 @@
 import toydl
 import importlib.metadata
 
-print(importlib.metadata.version('toydl'))
+print(importlib.metadata.version("toydl"))
 ```
