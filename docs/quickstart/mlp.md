@@ -7,7 +7,7 @@
 首先生成模拟数据，并将其分割为训练集和测试集：
 
 ```python
---8<-- "example/mlp_binary.py:gen_dateset"
+--8 < --"example/mlp_binary.py:gen_dateset"
 ```
 
 这里是一个简单的二维平面分割任务的数据：
@@ -19,9 +19,7 @@
 ## 配置网络结构
 
 ```python
-mlp_config = MLPConfig(
-    in_size=2, out_size=1, hidden_layer_size=10, hidden_layer_num=2
-)
+mlp_config = MLPConfig(in_size=2, out_size=1, hidden_layer_size=10, hidden_layer_num=2)
 
 mlp_model = MLPBinaryClassifyModel(mlp_config)
 ```
@@ -100,7 +98,7 @@ def run():
     # 比较优化器性能
     optimizer_results = {
         "SGD": (sgd_training_loss, sgd_testing_loss, sgd_test_result),
-        "Momentum": (momentum_training_loss, momentum_testing_loss, momentum_result)
+        "Momentum": (momentum_training_loss, momentum_testing_loss, momentum_result),
     }
     plot_multiple_optimizers(optimizer_results, title="优化器性能对比")
 ```
@@ -115,7 +113,7 @@ def run():
 ## MLP完整训练步骤
 
 ```python
---8<-- "example/mlp_binary.py:model"
+--8 < --"example/mlp_binary.py:model"
 ```
 
 ## 实验完整代码
@@ -123,5 +121,5 @@ def run():
 ??? note "本示例的完整代码: `example/mlp_binary.py`"
 
     ```python
-    --8<-- "example/mlp_binary.py"
+    --8 < --"example/mlp_binary.py"
     ```
